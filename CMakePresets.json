@@ -1,0 +1,32 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "library",
+            "displayName": "Static Library",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "library_tests",
+            "displayName": "Static Library w/ Tests",
+            "inherits": "library",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "BUILD_TESTING": true
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "library",
+            "configurePreset": "library"
+        },
+        {
+            "name": "library_tests",
+            "configurePreset": "library_tests"
+        }
+    ]
+}
