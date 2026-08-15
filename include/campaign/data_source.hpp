@@ -8,20 +8,8 @@ namespace campaign
 {
     class DataSource
     {
-    private:
-        std::vector<uint8_t> data_;
-
-        DataSourceUpdateEvent updateEvent_;
-
-        void setBlock(size_t index, void *ptr, size_t range);
-
-        void notifyByteUpdated(size_t index, uint8_t previous, uint8_t current) const;
-
-        void *getBlock(size_t index, size_t range);
-
-    public:
-        DataSource(int size);
-        ~DataSource();
+public:
+        DataSource(size_t size);
 
         void init();
         void init(uint8_t *copyPtr);
@@ -50,5 +38,16 @@ namespace campaign
         }
 
         std::size_t getSize() const;
+
+    private:
+        std::vector<uint8_t> data_;
+
+        DataSourceUpdateEvent updateEvent_;
+
+        void setBlock(size_t index, void *ptr, size_t range);
+
+        void notifyByteUpdated(size_t index, uint8_t previous, uint8_t current) const;
+
+        void *getBlock(size_t index, size_t range);
     };
 }

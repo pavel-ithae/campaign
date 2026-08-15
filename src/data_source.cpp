@@ -1,83 +1,19 @@
 #include <campaign/data_source.hpp>
 
-#if NDEBUG // We only check for bounds in debug builds.
-#define ASSERT_BOUNDS(index)
-#else
-#include <cassert>
-#define ASSERT_BOUNDS(index) assert((index) < data_.size())
+#if !NDEBUG // We check for bounds in debug builds.
+#define CAMPAIGN_SOURCE_SAFETY_GUARDS 1
 #endif
+
+#if CAMPAIGN_SOURCE_SAFETY_GUARDS 
+#include <cassert>
+#define ASSERT_BOUNDS(index) assert((index) < data_.size()) 
+#else // !CAMPAIGN_SOURCE_SAFETY_GUARDS 
+#define ASSERT_BOUNDS(index) 
+#endif // CAMPAIGN_SOURCE_SAFETY_GUARDS
 
 using namespace campaign;
 
-void DataSource::setBlock(size_t index, void *ptr, size_t range)
-{
-    for (size_t i; i < range; ++i)
-    {
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpointer-arith"
-#endif
-        setByte(index, *static_cast<uint8_t*>(ptr + i));
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif
-    }
-}
-
-void *DataSource::getBlock(size_t index, size_t range)
-{
-    ASSERT_BOUNDS(index + range);
-
-    return &data_[index];
-}
-
-void DataSource::notifyByteUpdated(size_t index, uint8_t previous, uint8_t current) const
-{
-    updateEvent_.call(index, previous, current);
-}
-
-DataSourceEventListenerToken DataSource::registerFlagCallback(size_t index, uint8_t flagMask, const DataSourceFlagUpdatedHandler &handler)
-{
-    return updateEvent_.registerCallback([index, flagMask, handler](size_t eventIndex, uint8_t previous, uint8_t current)
-                            { 
-                                if (eventIndex != index)
-                                {
-                                    return;
-                                }
-
-                                if (((previous ^ current) & flagMask) == 0x0)
-                                {
-                                    return;
-                                }
-
-                                if ((current & flagMask) == flagMask)
-                                {
-                                    handler(false, true);
-                                }
-                                else
-                                {
-                                    handler(true, false);
-                                } });
-}
-
-DataSourceEventListenerToken DataSource::registerByteCallback(size_t index, const DataSourceByteUpdatedHandler &handler)
-{
-    return updateEvent_.registerCallback([index, handler](size_t eventIndex, uint8_t previous, uint8_t current)
-                            {
-                            if (eventIndex != index)
-                            {
-                                return;
-                            }
-
-                            handler(previous, current); });
-}
-
-void DataSource::unregisterUpdateCallback(DataSourceEventHandlerKey key)
-{
-    updateEvent_.unregisterCallback(key);
-}
-
-DataSource::DataSource(int size)
+DataSource::DataSource(size_t size)
 {
     data_.resize(size);
 }
@@ -163,4 +99,72 @@ uint8_t DataSource::getByte(size_t index) const
 std::size_t DataSource::getSize() const
 {
     return data_.size();
+}
+
+void DataSource::setBlock(size_t index, void *ptr, size_t range)
+{
+    for (size_t i; i < range; ++i)
+    {
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpointer-arith"
+#endif
+        setByte(index, *static_cast<uint8_t*>(ptr + i));
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
+    }
+}
+
+void *DataSource::getBlock(size_t index, size_t range)
+{
+    ASSERT_BOUNDS(index + range);
+
+    return &data_[index];
+}
+
+void DataSource::notifyByteUpdated(size_t index, uint8_t previous, uint8_t current) const
+{
+    updateEvent_.call(index, previous, current);
+}
+
+DataSourceEventListenerToken DataSource::registerFlagCallback(size_t index, uint8_t flagMask, const DataSourceFlagUpdatedHandler &handler)
+{
+    return updateEvent_.registerCallback([index, flagMask, handler](size_t eventIndex, uint8_t previous, uint8_t current)
+                            { 
+                                if (eventIndex != index)
+                                {
+                                    return;
+                                }
+
+                                if (((previous ^ current) & flagMask) == 0x0)
+                                {
+                                    return;
+                                }
+
+                                if ((current & flagMask) == flagMask)
+                                {
+                                    handler(false, true);
+                                }
+                                else
+                                {
+                                    handler(true, false);
+                                } });
+}
+
+DataSourceEventListenerToken DataSource::registerByteCallback(size_t index, const DataSourceByteUpdatedHandler &handler)
+{
+    return updateEvent_.registerCallback([index, handler](size_t eventIndex, uint8_t previous, uint8_t current)
+                            {
+                            if (eventIndex != index)
+                            {
+                                return;
+                            }
+
+                            handler(previous, current); });
+}
+
+void DataSource::unregisterUpdateCallback(DataSourceEventHandlerKey key)
+{
+    updateEvent_.unregisterCallback(key);
 }

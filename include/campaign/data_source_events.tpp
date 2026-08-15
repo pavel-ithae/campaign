@@ -1,3 +1,5 @@
+#include "data_source_events.hpp"
+
 template <typename... TArgs>
 void DataSourceEvent<TArgs...>::call(TArgs... args) const
 {
