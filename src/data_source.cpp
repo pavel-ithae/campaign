@@ -1,17 +1,25 @@
 #include <campaign/data_source.hpp>
 
-#if !NDEBUG // We check for bounds in debug builds.
-#define CAMPAIGN_SOURCE_SAFETY_GUARDS 1
-#endif
+#if CAMPAIGN_SOURCE_CHECK_BOUNDS
+#include <stdexcept>
+#include <string>
 
-#if CAMPAIGN_SOURCE_SAFETY_GUARDS 
-#include <cassert>
-#define ASSERT_BOUNDS(index) assert((index) < data_.size()) 
-#else // !CAMPAIGN_SOURCE_SAFETY_GUARDS 
-#define ASSERT_BOUNDS(index) 
-#endif // CAMPAIGN_SOURCE_SAFETY_GUARDS
+#define CHECK_DATA_BOUNDS(index) tryCheckBounds(*this, index);
+#else // !CAMPAIGN_SOURCE_CHECK_BOUNDS
+#define CHECK_DATA_BOUNDS(index) 
+#endif // CAMPAIGN_SOURCE_CHECK_BOUNDS
 
 using namespace campaign;
+
+#if CAMPAIGN_SOURCE_CHECK_BOUNDS
+inline void tryCheckBounds(const DataSource& source, size_t index)
+{
+    if (index >= source.getSize())
+    {
+        throw std::out_of_range("Trying to access a value (at " + std::to_string(index) + ") outside of the source's range ("+ std::to_string(source.getSize()) + ").");
+    }
+}
+#endif
 
 DataSource::DataSource(size_t size)
 {
@@ -23,14 +31,14 @@ void DataSource::init()
     std::fill(data_.begin(), data_.end(), 0);
 }
 
-void DataSource::init(uint8_t *copyPtr)
+void DataSource::init(const uint8_t *copyPtr)
 {
     data_.assign(copyPtr, copyPtr + data_.size());
 }
 
 bool DataSource::setFlag(size_t index, uint8_t flagMask, bool value)
 {
-    ASSERT_BOUNDS(index);
+    CHECK_DATA_BOUNDS(index);
 
     if (value)
     {
@@ -66,7 +74,7 @@ bool DataSource::setFlag(size_t index, uint8_t flagMask, bool value)
 
 bool DataSource::setByte(size_t index, uint8_t value)
 {
-    ASSERT_BOUNDS(index);
+    CHECK_DATA_BOUNDS(index);
 
     if (data_[index] == value)
     {
@@ -84,14 +92,14 @@ bool DataSource::setByte(size_t index, uint8_t value)
 
 bool DataSource::getFlag(size_t index, uint8_t flagMask) const
 {
-    ASSERT_BOUNDS(index);
+    CHECK_DATA_BOUNDS(index);
 
     return (data_[index] & flagMask) == flagMask;
 }
 
 uint8_t DataSource::getByte(size_t index) const
 {
-    ASSERT_BOUNDS(index);
+    CHECK_DATA_BOUNDS(index);
 
     return data_[index];
 }
@@ -101,15 +109,21 @@ std::size_t DataSource::getSize() const
     return data_.size();
 }
 
-void DataSource::setBlock(size_t index, void *ptr, size_t range)
+const std::uint8_t *DataSource::getDataPtr() const
 {
-    for (size_t i; i < range; ++i)
+    return data_.begin().base();
+}
+void DataSource::setBlock(size_t index, const void *ptr, size_t range)
+{
+    CHECK_DATA_BOUNDS(index + (range - 1));
+
+    for (size_t i = index; i < range; ++i)
     {
 #ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpointer-arith"
 #endif
-        setByte(index, *static_cast<uint8_t*>(ptr + i));
+        data_[i] = *static_cast<const uint8_t*>(ptr + i);
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif
@@ -118,7 +132,7 @@ void DataSource::setBlock(size_t index, void *ptr, size_t range)
 
 void *DataSource::getBlock(size_t index, size_t range)
 {
-    ASSERT_BOUNDS(index + range);
+    CHECK_DATA_BOUNDS(index + (range - 1));
 
     return &data_[index];
 }

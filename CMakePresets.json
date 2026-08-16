@@ -2,6 +2,13 @@
     "version": 3,
     "configurePresets": [
         {
+            "name": "bounds-check-disabled",
+            "hidden": true,
+            "cacheVariables": {
+                "CAMPAIGN_BOUNDS_CHECK_DISABLED": true
+            }
+        },
+        {
             "name": "library",
             "displayName": "Static Library",
             "binaryDir": "${sourceDir}/build/${presetName}",

@@ -1,5 +1,11 @@
 #pragma once
 
+#if CAMPAIGN_BOUNDS_CHECK_DISABLED
+#define CAMPAIGN_SOURCE_CHECK_BOUNDS 0
+#else
+#define CAMPAIGN_SOURCE_CHECK_BOUNDS 1
+#endif
+
 #include <campaign/data_source_events.hpp>
 #include <cstdint>
 #include <vector>
@@ -8,11 +14,11 @@ namespace campaign
 {
     class DataSource
     {
-public:
+    public:
         DataSource(size_t size);
 
         void init();
-        void init(uint8_t *copyPtr);
+        void init(const uint8_t *copyPtr);
 
         bool setFlag(size_t index, uint8_t flagMask, bool value);
         bool setByte(size_t index, uint8_t value);
@@ -38,13 +44,14 @@ public:
         }
 
         std::size_t getSize() const;
+        const std::uint8_t *getDataPtr() const;
 
     private:
         std::vector<uint8_t> data_;
 
         DataSourceUpdateEvent updateEvent_;
 
-        void setBlock(size_t index, void *ptr, size_t range);
+        void setBlock(size_t index, const void *ptr, size_t range);
 
         void notifyByteUpdated(size_t index, uint8_t previous, uint8_t current) const;
 
