@@ -1,3 +1,4 @@
 {
-    "cmake.ctest.testExplorerIntegrationEnabled": true
+    "cmake.ctest.testExplorerIntegrationEnabled": true,
+    "cmake.buildDirectory": "${workspaceFolder}/build"
 }

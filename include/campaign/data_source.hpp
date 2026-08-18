@@ -12,9 +12,17 @@
 
 namespace campaign
 {
+#if CAMPAIGN_LIBRARY_TESTING
+    namespace testing
+    {
+        class DataSourceEventTest;
+    }
+#endif
+
     class DataSource
     {
     public:
+        DataSource();
         DataSource(size_t size);
 
         void init();
@@ -56,5 +64,9 @@ namespace campaign
         void notifyByteUpdated(size_t index, uint8_t previous, uint8_t current) const;
 
         void *getBlock(size_t index, size_t range);
+
+#if CAMPAIGN_LIBRARY_TESTING
+        friend class testing::DataSourceEventTest;
+#endif
     };
 }

@@ -6,9 +6,17 @@
 
 namespace campaign
 {
+#if CAMPAIGN_LIBRARY_TESTING
+    namespace testing
+    {
+        class DataLaoutTest;
+    }
+#endif
+
     class DataLayout
     {
     public:
+        DataLayout();
         DataLayout(size_t descriptorCount);
 
         const DataDescriptor &operator[](const std::string &id) const;
@@ -19,8 +27,8 @@ namespace campaign
         void pushByte(const std::string &id);
         void pushByte();
 
-        void pushDynamic(const std::string &id, size_t descriptorCount);
-        void pushDyanmic(size_t descriptorCount);
+        void pushDynamic(const std::string &id, size_t size);
+        void pushDynamic(size_t size);
 
         size_t getDataSize() const;
         
@@ -37,5 +45,9 @@ namespace campaign
         void stepByte();
         void stepBlock(size_t count);
         void stepToFreeByte();
+
+#if CAMPAIGN_LIBRARY_TESTING
+        friend class testing::DataLaoutTest;
+#endif
     };
 }

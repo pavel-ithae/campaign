@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10.0)
 project(campaign LANGUAGES C CXX)
 
 file(GLOB CAMPAIGN_LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
-file(GLOB CAMPAIGN_LIB_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
+file(GLOB_RECURSE CAMPAIGN_LIB_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
 
 add_library(campaign)
 
@@ -25,6 +25,8 @@ target_sources(campaign
 
 if(BUILD_TESTING)
     enable_testing()
+
+    target_compile_definitions(campaign PUBLIC CAMPAIGN_LIBRARY_TESTING=1)
 
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests)
 endif()

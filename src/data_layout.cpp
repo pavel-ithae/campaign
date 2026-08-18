@@ -7,12 +7,16 @@ using FlagDescription = DataDescriptor::FlagDescription;
 using ByteDescription = DataDescriptor::ByteDescription;
 using DynamicDescription = DataDescriptor::DynamicDescription;
 
-DataLayout::DataLayout(size_t size)
+DataLayout::DataLayout()
 {
-    descriptorMap_.reserve(size);
-
     cursor_ = 0;
     flagCursor_ = 0x1;
+}
+
+DataLayout::DataLayout(size_t size)
+    : DataLayout()
+{
+    descriptorMap_.reserve(size);
 }
 
 const DataDescriptor &DataLayout::operator[](const std::string &id) const
@@ -57,7 +61,7 @@ void DataLayout::pushDynamic(const std::string &id, size_t size)
     stepBlock(size);
 }
 
-void DataLayout::pushDyanmic(size_t size)
+void DataLayout::pushDynamic(size_t size)
 {
     stepToFreeByte();
 

@@ -31,5 +31,5 @@ namespace campaign
         std::unordered_map<std::string, DataLocator> locators_;
     };
 
-    #include "data_layout.tpp"
+    #include "data_domain.tpp"
 }

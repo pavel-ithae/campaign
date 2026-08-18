@@ -11,6 +11,13 @@ namespace campaign
     class DataSource;
     class IDataSourceEvent;
 
+#if CAMPAIGN_LIBRARY_TESTING
+    namespace testing
+    {
+        class DataSourceEventTest;
+    }
+#endif
+
     using DataSourceEventHandlerKey = char *;
 
     /// @brief Tracks state of a registered event callback.
@@ -70,6 +77,10 @@ namespace campaign
 
     private:
         std::unordered_map<DataSourceEventHandlerKey, std::function<void(TArgs...)>> listenersMap_;
+
+#if CAMPAIGN_LIBRARY_TESTING
+        friend class testing::DataSourceEventTest;
+#endif // CAMPAIGN_LIBRARY_TESTING
     };
 
     using DataSourceUpdateEvent = DataSourceEvent<size_t, uint8_t, uint8_t>; // <index, previous, current>

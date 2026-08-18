@@ -1,7 +1,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include <campaign/data_source.hpp>
+#include <campaign/testing/data_source_events_test.hpp>
 
 using namespace campaign;
+using namespace campaign::testing;
 
 TEST_CASE("Source Init Empty", "[source]")
 {
@@ -352,4 +354,44 @@ TEST_CASE("Source Copy Init", "[source]")
     REQUIRE(b.getByte(1) == 232);
     REQUIRE(b.getByte(2) == 64);
     REQUIRE(b.getByte(3) == 0);
+}
+
+TEST_CASE("Source Event Clear", "[source]")
+{
+    DataSource source(4);
+
+    auto flagCallback = [&](bool, bool) {};
+    auto byteCallback = [&](uint8_t, uint8_t) {};
+
+    source.init();
+
+    auto &eventMap = DataSourceEventTest::getUpdateEventListenerMap(source);
+    REQUIRE(eventMap.size() == 0);
+
+    auto aToken = source.registerFlagCallback(0, 0x1, flagCallback);
+    REQUIRE(eventMap.size() == 1);
+
+    auto bToken = source.registerFlagCallback(0, 0x1, flagCallback);
+    REQUIRE(eventMap.size() == 2);
+
+    aToken.unregister();
+    REQUIRE(eventMap.size() == 1);
+
+    aToken.unregister();
+    REQUIRE(eventMap.size() == 1);
+
+    bToken.unregister();
+    REQUIRE(eventMap.size() == 0);
+
+    aToken = source.registerByteCallback(2, byteCallback);
+    REQUIRE(eventMap.size() == 1);
+
+    bToken = source.registerByteCallback(3, byteCallback);
+    REQUIRE(eventMap.size() == 2);
+
+    aToken.unregister();
+    REQUIRE(eventMap.size() == 1);
+
+    bToken.unregister();
+    REQUIRE(eventMap.size() == 0);
 }

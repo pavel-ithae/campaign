@@ -21,6 +21,10 @@ inline void tryCheckBounds(const DataSource& source, size_t index)
 }
 #endif
 
+DataSource::DataSource()
+{
+}
+
 DataSource::DataSource(size_t size)
 {
     data_.resize(size);
