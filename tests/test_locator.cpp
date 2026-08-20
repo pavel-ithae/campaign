@@ -60,5 +60,17 @@ TEST_CASE("Locator Set", "[locator]")
 {
     INIT_LOCATOR_TEST_DATA();
 
-    // TODO: Complete.
+    REQUIRE(locator.getFlag("flag_first") == false);
+
+    locator.setFlag("flag_first", true);
+    REQUIRE(locator.getFlag("flag_first") == true);
+    REQUIRE(locator.getFlag("flag_second") == false);
+
+    locator.setFlag("flag_second", true);
+    REQUIRE(locator.getFlag("flag_first") == true);
+    REQUIRE(locator.getFlag("flag_second") == true);
+
+    locator.setFlag("flag_second", false);
+    REQUIRE(locator.getFlag("flag_first") == true);
+    REQUIRE(locator.getFlag("flag_second") == false);
 }
