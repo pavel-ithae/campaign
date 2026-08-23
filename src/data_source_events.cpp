@@ -1,38 +1,43 @@
 #include <campaign/data_source_events.hpp>
 #include <memory>
+#include <iostream>
 
 using namespace campaign;
 
-void DataSourceEventListenerState::release()
+IDataSourceEventListener::IDataSourceEventListener()
 {
-    if (!active_)
-    {
-        return;
-    }
+    key_ = new char;
+}
 
-    active_ = false;
+IDataSourceEventListener::~IDataSourceEventListener()
+{
     delete key_;
 }
 
-DataSourceEventListenerToken::DataSourceEventListenerToken(IDataSourceEvent &event, DataSourceEventHandlerKey key)
+DataSourceEventHandlerKey IDataSourceEventListener::getKey() const
+{
+    return key_;
+}
+
+DataSourceEventListenerToken::DataSourceEventListenerToken(IDataSourceEvent &event, const std::shared_ptr<IDataSourceEventListener> &listener)
 {
     event_ = &event;
-    state_ = std::make_shared<DataSourceEventListenerState>(key, true);
+    listener_ = listener;
 }
 
 void DataSourceEventListenerToken::unregister() const
 {
-    if (!state_->isActive())
+    if (!isActive())
     {
         return;
     }
 
-    event_->unregisterCallback(state_->getKey());
+    auto listenerLocked = listener_.lock();
 
-    state_->release();
+    event_->unregisterCallback(listenerLocked->getKey());
 }
 
 bool DataSourceEventListenerToken::isActive() const
 {
-    return state_->isActive();
+    return !listener_.expired();
 }

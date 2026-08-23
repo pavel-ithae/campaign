@@ -8,8 +8,7 @@
 
 namespace campaign
 {
-    class DataSource;
-    class IDataSourceEvent;
+    class IDataSourceEvent; // Forward declaration for tokens.
 
 #if CAMPAIGN_LIBRARY_TESTING
     namespace testing
@@ -20,24 +19,37 @@ namespace campaign
 
     using DataSourceEventHandlerKey = char *;
 
-    /// @brief Tracks state of a registered event callback.
-    class DataSourceEventListenerState
+    class IDataSourceEventListener
     {
+    protected:
+        IDataSourceEventListener();
+
     public:
-        DataSourceEventListenerState(DataSourceEventHandlerKey key, bool active)
-        {
-            key_ = key;
-            active_ = active;
-        }
+        IDataSourceEventListener(const IDataSourceEventListener &) = delete; // Copy constructor could lead to deleting the key early and double deleting after.
 
-        void release();
+        virtual ~IDataSourceEventListener();
 
-        inline DataSourceEventHandlerKey getKey() { return key_; }
-        inline bool isActive() { return active_; }
+        IDataSourceEventListener &operator=(const IDataSourceEventListener &) = delete; // Copy assignment could lead to deleting the key early  and double deleting after.
+
+        DataSourceEventHandlerKey getKey() const;
 
     private:
         DataSourceEventHandlerKey key_;
-        bool active_;
+    };
+
+    template <typename... TArgs>
+    class DataSourceEventListener : public IDataSourceEventListener
+    {
+    public:
+        DataSourceEventListener(const std::function<void(TArgs...)> &callback);
+        DataSourceEventListener(const DataSourceEventListener<TArgs...> &) = delete; // Copy constructor could lead to deleting the key early and double deleting after.
+
+        DataSourceEventListener<TArgs...> &operator=(const DataSourceEventListener<TArgs...> &) = delete; // Copy assignment could lead to deleting the key early  and double deleting after.
+
+        void call(TArgs... args) const;
+
+    private:
+        std::function<void(TArgs...)> callback_;
     };
 
     /// @brief Token to keep track of a registered callback.
@@ -45,7 +57,10 @@ namespace campaign
     {
         // TODO: Implement a way to automatically release the token when data source is removed.
     public:
-        DataSourceEventListenerToken(IDataSourceEvent &event, DataSourceEventHandlerKey key);
+        DataSourceEventListenerToken(IDataSourceEvent &event, const std::shared_ptr<IDataSourceEventListener> &listener);
+
+        template <typename... TArgs>
+        DataSourceEventListenerToken(IDataSourceEvent &event, const std::shared_ptr<DataSourceEventListener<TArgs...>> listener);
 
         void unregister() const;
 
@@ -53,12 +68,15 @@ namespace campaign
 
     private:
         IDataSourceEvent *event_;
-        std::shared_ptr<DataSourceEventListenerState> state_;
+        std::weak_ptr<IDataSourceEventListener> listener_;
     };
 
     /// @brief Base class for data source events.
     class IDataSourceEvent
     {
+    protected:
+        IDataSourceEvent() {}
+
     public:
         virtual void unregisterCallback(DataSourceEventHandlerKey key) = 0;
     };
@@ -69,6 +87,10 @@ namespace campaign
     class DataSourceEvent : IDataSourceEvent
     {
     public:
+        DataSourceEvent() : IDataSourceEvent() {}
+
+        using Listener = DataSourceEventListener<TArgs...>;
+
         void call(TArgs... args) const;
 
         DataSourceEventListenerToken registerCallback(const std::function<void(TArgs...)> &handler);
@@ -76,7 +98,7 @@ namespace campaign
         void unregisterCallback(DataSourceEventHandlerKey key) override;
 
     private:
-        std::unordered_map<DataSourceEventHandlerKey, std::function<void(TArgs...)>> listenersMap_;
+        std::unordered_map<DataSourceEventHandlerKey, std::shared_ptr<Listener>> listenersMap_;
 
 #if CAMPAIGN_LIBRARY_TESTING
         friend class testing::DataSourceEventTest;
@@ -84,6 +106,7 @@ namespace campaign
     };
 
     using DataSourceUpdateEvent = DataSourceEvent<size_t, uint8_t, uint8_t>; // <index, previous, current>
+    using DataSourceUpdateEventListener = DataSourceEventListener<size_t, uint8_t, uint8_t>;
 
     using DataSourceFlagUpdatedHandler = std::function<void(bool, bool)>;
     using DataSourceByteUpdatedHandler = std::function<void(uint8_t, uint8_t)>;

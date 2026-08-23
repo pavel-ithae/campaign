@@ -1,5 +1,3 @@
-#include "data_locator.hpp"
-
 template <typename T>
 void DataLocator::set(std::string id, const T &value)
 {
