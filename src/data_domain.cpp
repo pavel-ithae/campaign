@@ -29,12 +29,12 @@ DataDomain::DataDomain(const std::vector<Entry> &entries)
     }
 }
 
-DataFlagToken DataDomain::getFlagToken(const std::string &locationID, const std::string &flagID)
+ProxyFlagToken DataDomain::getFlagToken(const std::string &locationID, const std::string &flagID)
 {
     return locators_.at(locationID).getFlagToken(flagID);
 }
 
-DataByteToken DataDomain::getByteToken(const std::string &locationID, const std::string &byteID)
+ProxyByteToken DataDomain::getByteToken(const std::string &locationID, const std::string &byteID)
 {
     return locators_.at(locationID).getByteToken(byteID);
 }

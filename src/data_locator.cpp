@@ -35,16 +35,16 @@ uint8_t campaign::DataLocator::getByte(std::string id)
     return proxyPtr_.lock()->getByte(desc.index);
 }
 
-DataFlagToken DataLocator::getFlagToken(std::string id)
+ProxyFlagToken DataLocator::getFlagToken(std::string id)
 {
     auto desc = layout_.getFlagInfo(id);
 
-    return DataFlagToken(proxyPtr_, desc.index, desc.flagMask);
+    return ProxyFlagToken(proxyPtr_, desc.index, desc.flagMask);
 }
 
-DataByteToken DataLocator::getByteToken(std::string id)
+ProxyByteToken DataLocator::getByteToken(std::string id)
 {
     auto desc = layout_.getByteInfo(id);
 
-    return DataByteToken(proxyPtr_, desc.index);
+    return ProxyByteToken(proxyPtr_, desc.index);
 }

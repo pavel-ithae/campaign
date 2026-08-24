@@ -13,6 +13,7 @@
 
 namespace campaign
 {
+    // == Declarations. ==
     using ProxyUpdateEvent = Event<size_t, uint8_t, uint8_t>; // <index, previous, current>
     using ProxyUpdateEventListener = EventListener<size_t, uint8_t, uint8_t>;
 
@@ -26,6 +27,8 @@ namespace campaign
     }
 #endif
 
+
+    // == Proxy. ==
     class Proxy
     {
     public:
@@ -74,4 +77,64 @@ namespace campaign
         friend class testing::EventTestHelper;
 #endif
     };
+
+
+    // == Tokens. ==
+    class ProxyToken
+    {
+    public:
+        bool isValid() const;
+
+    protected:
+        ProxyToken(const std::weak_ptr<Proxy> &proxyPtr);
+
+        Proxy &getSource() const;
+
+    private:
+        const std::weak_ptr<Proxy> proxyPtr_;
+    };
+
+    class ProxyFlagToken : ProxyToken
+    {
+    public:
+        ProxyFlagToken(const std::weak_ptr<Proxy> &proxyPtr, size_t index, uint8_t flagMask);
+
+        void set(bool value) const;
+        bool get() const;
+
+        EventListenerToken registerCallback(const ProxyFlagUpdatedHandler &handler);
+
+    private:
+        const size_t index_;
+        const uint8_t flagMask_;
+    };
+
+    class ProxyByteToken : ProxyToken
+    {
+    public:
+        ProxyByteToken(const std::weak_ptr<Proxy> &proxyPtr, size_t index);
+
+        void set(uint8_t byte) const;
+        uint8_t get() const;
+
+        EventListenerToken registerCallback(const ProxyByteUpdatedHandler &handler);
+
+    private:
+        const size_t index_;
+    };
+
+    template <typename T>
+    class ProxyDynamicToken : ProxyToken
+    {
+    public:
+        ProxyDynamicToken(const std::weak_ptr<Proxy> &proxyPtr, size_t index);
+
+        void set(const T &value) const;
+        const T &get() const;
+
+    private:
+        const size_t index_;
+    };
+
+#include "proxy.tpp"
 }

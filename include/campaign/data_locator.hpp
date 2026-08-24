@@ -2,7 +2,6 @@
 
 #include <campaign/proxy.hpp>
 #include <campaign/layout.hpp>
-#include <campaign/data_token.hpp>
 #include <string>
 #include <cinttypes>
 #include <unordered_map>
@@ -28,11 +27,11 @@ namespace campaign
         template <typename T>
         T get(std::string id);
 
-        DataFlagToken getFlagToken(std::string id);
-        DataByteToken getByteToken(std::string id);
+        ProxyFlagToken getFlagToken(std::string id);
+        ProxyByteToken getByteToken(std::string id);
 
         template <typename T>
-        DataDynamicToken<T> getDynamicToken(std::string id);
+        ProxyDynamicToken<T> getDynamicToken(std::string id);
 
     private:
         const Layout layout_;

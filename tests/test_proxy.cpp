@@ -1,3 +1,7 @@
+// TODO: Add tests:
+// - Make sure it doesn't edit outside the data source.
+// - Test for tokens.
+
 #include <catch2/catch_test_macros.hpp>
 #include <campaign/proxy.hpp>
 #include <campaign/testing/event_test_helper.hpp>

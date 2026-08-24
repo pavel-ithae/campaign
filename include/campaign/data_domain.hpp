@@ -20,11 +20,11 @@ namespace campaign
 
         DataDomain(const std::vector<Entry> &entries);
 
-        DataFlagToken getFlagToken(const std::string &locationID, const std::string &flagID);
-        DataByteToken getByteToken(const std::string &locationID, const std::string &byteID);
+        ProxyFlagToken getFlagToken(const std::string &locationID, const std::string &flagID);
+        ProxyByteToken getByteToken(const std::string &locationID, const std::string &byteID);
         
         template <typename T>
-        DataDynamicToken<T> getDynamicToken(const std::string locationID, const std::string dynamicID);
+        ProxyDynamicToken<T> getDynamicToken(const std::string locationID, const std::string dynamicID);
 
     private:
         std::vector<uint8_t> data_;

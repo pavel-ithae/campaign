@@ -15,9 +15,9 @@ T DataLocator::get(std::string id)
 }
 
 template <typename T>
-DataDynamicToken<T> DataLocator::getDynamicToken(std::string id)
+ProxyDynamicToken<T> DataLocator::getDynamicToken(std::string id)
 {
     auto info = layout_.getDynamicInfo(id, sizeof(T));
 
-    return DataDynamicToken<T>(proxyPtr_, info.index);
+    return ProxyDynamicToken<T>(proxyPtr_, info.index);
 }

@@ -181,3 +181,63 @@ void Proxy::unregisterUpdateCallback(EventListenerKey key)
 {
     updateEvent_.unregisterCallback(key);
 }
+
+bool ProxyToken::isValid() const
+{
+    return proxyPtr_.use_count() > 0;
+}
+
+ProxyToken::ProxyToken(const std::weak_ptr<Proxy> &proxyPtr)
+    : proxyPtr_(proxyPtr)
+{
+}
+
+Proxy &ProxyToken::getSource() const
+{
+    if (!isValid())
+    {
+        throw std::runtime_error("Trying to get data from an expired token.");
+    }
+
+    return *proxyPtr_.lock();
+}
+
+ProxyFlagToken::ProxyFlagToken(const std::weak_ptr<Proxy> &proxyPtr, size_t index, uint8_t flagMask)
+    : ProxyToken(proxyPtr), index_(index), flagMask_(flagMask)
+{
+}
+
+void ProxyFlagToken::set(bool value) const
+{
+    getSource().setFlag(index_, flagMask_, value);
+}
+
+bool ProxyFlagToken::get() const
+{
+    return getSource().getFlag(index_, flagMask_);
+}
+
+EventListenerToken ProxyFlagToken::registerCallback(const ProxyFlagUpdatedHandler &handler)
+{
+    return getSource().registerFlagCallback(index_, flagMask_, handler);
+}
+
+campaign::ProxyByteToken::ProxyByteToken(const std::weak_ptr<Proxy> &sourcePtr, size_t index)
+    : ProxyToken(sourcePtr), index_(index)
+{
+}
+
+void ProxyByteToken::set(uint8_t byte) const
+{
+    getSource().setByte(index_, byte);
+}
+
+uint8_t ProxyByteToken::get() const
+{
+    return getSource().getByte(index_);
+}
+
+EventListenerToken campaign::ProxyByteToken::registerCallback(const ProxyByteUpdatedHandler &handler)
+{
+    return getSource().registerByteCallback(index_, handler);
+}
