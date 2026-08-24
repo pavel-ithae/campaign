@@ -1,4 +1,4 @@
-#include <campaign/data_source.hpp>
+#include <campaign/proxy.hpp>
 
 #if CAMPAIGN_SOURCE_CHECK_BOUNDS
 #include <stdexcept>
@@ -12,7 +12,7 @@
 using namespace campaign;
 
 #if CAMPAIGN_SOURCE_CHECK_BOUNDS
-inline void tryCheckBounds(const DataSource& source, size_t index)
+inline void tryCheckBounds(const Proxy& source, size_t index)
 {
     if (index >= source.getSize())
     {
@@ -21,26 +21,21 @@ inline void tryCheckBounds(const DataSource& source, size_t index)
 }
 #endif
 
-DataSource::DataSource()
+Proxy::Proxy()
 {
 }
 
-DataSource::DataSource(size_t size)
+Proxy::Proxy(const std::span<uint8_t> &span)
 {
-    data_.resize(size);
+    data_ = span;
 }
 
-void DataSource::init()
+Proxy::Proxy(uint8_t *first, uint8_t *last)
 {
-    std::fill(data_.begin(), data_.end(), 0);
+    data_ = std::span<uint8_t>(first, last);
 }
 
-void DataSource::init(const uint8_t *copyPtr)
-{
-    data_.assign(copyPtr, copyPtr + data_.size());
-}
-
-bool DataSource::setFlag(size_t index, uint8_t flagMask, bool value)
+bool Proxy::setFlag(size_t index, uint8_t flagMask, bool value)
 {
     CHECK_DATA_BOUNDS(index);
 
@@ -76,7 +71,7 @@ bool DataSource::setFlag(size_t index, uint8_t flagMask, bool value)
     }
 }
 
-bool DataSource::setByte(size_t index, uint8_t value)
+bool Proxy::setByte(size_t index, uint8_t value)
 {
     CHECK_DATA_BOUNDS(index);
 
@@ -94,30 +89,30 @@ bool DataSource::setByte(size_t index, uint8_t value)
     return true;
 }
 
-bool DataSource::getFlag(size_t index, uint8_t flagMask) const
+bool Proxy::getFlag(size_t index, uint8_t flagMask) const
 {
     CHECK_DATA_BOUNDS(index);
 
     return (data_[index] & flagMask) == flagMask;
 }
 
-uint8_t DataSource::getByte(size_t index) const
+uint8_t Proxy::getByte(size_t index) const
 {
     CHECK_DATA_BOUNDS(index);
 
     return data_[index];
 }
 
-std::size_t DataSource::getSize() const
+std::size_t Proxy::getSize() const
 {
     return data_.size();
 }
 
-const std::uint8_t *DataSource::getDataPtr() const
+const std::uint8_t *Proxy::getDataPtr() const
 {
     return data_.begin().base();
 }
-void DataSource::setBlock(size_t index, const void *ptr, size_t range)
+void Proxy::setBlock(size_t index, const void *ptr, size_t range)
 {
     CHECK_DATA_BOUNDS(index + (range - 1));
 
@@ -134,19 +129,19 @@ void DataSource::setBlock(size_t index, const void *ptr, size_t range)
     }
 }
 
-void *DataSource::getBlock(size_t index, size_t range)
+void *Proxy::getBlock(size_t index, size_t range)
 {
     CHECK_DATA_BOUNDS(index + (range - 1));
 
     return &data_[index];
 }
 
-void DataSource::notifyByteUpdated(size_t index, uint8_t previous, uint8_t current) const
+void Proxy::notifyByteUpdated(size_t index, uint8_t previous, uint8_t current) const
 {
     updateEvent_.call(index, previous, current);
 }
 
-EventListenerToken DataSource::registerFlagCallback(size_t index, uint8_t flagMask, const DataSourceFlagUpdatedHandler &handler)
+EventListenerToken Proxy::registerFlagCallback(size_t index, uint8_t flagMask, const ProxyFlagUpdatedHandler &handler)
 {
     return updateEvent_.registerCallback([index, flagMask, handler](size_t eventIndex, uint8_t previous, uint8_t current)
                             { 
@@ -170,7 +165,7 @@ EventListenerToken DataSource::registerFlagCallback(size_t index, uint8_t flagMa
                                 } });
 }
 
-EventListenerToken DataSource::registerByteCallback(size_t index, const DataSourceByteUpdatedHandler &handler)
+EventListenerToken Proxy::registerByteCallback(size_t index, const ProxyByteUpdatedHandler &handler)
 {
     return updateEvent_.registerCallback([index, handler](size_t eventIndex, uint8_t previous, uint8_t current)
                             {
@@ -182,7 +177,7 @@ EventListenerToken DataSource::registerByteCallback(size_t index, const DataSour
                             handler(previous, current); });
 }
 
-void DataSource::unregisterUpdateCallback(EventListenerKey key)
+void Proxy::unregisterUpdateCallback(EventListenerKey key)
 {
     updateEvent_.unregisterCallback(key);
 }

@@ -1,7 +1,5 @@
-#include "data_token.hpp"
-
 template <typename T>
-DataDynamicToken<T>::DataDynamicToken(const std::weak_ptr<DataSource> &sourcePtr, size_t index)
+DataDynamicToken<T>::DataDynamicToken(const std::weak_ptr<Proxy> &sourcePtr, size_t index)
     : DataToken(sourcePtr), index_(index)
 {
 }

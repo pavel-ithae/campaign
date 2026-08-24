@@ -13,11 +13,11 @@
 
 namespace campaign
 {
-    using DataSourceUpdateEvent = Event<size_t, uint8_t, uint8_t>; // <index, previous, current>
-    using DataSourceUpdateEventListener = EventListener<size_t, uint8_t, uint8_t>;
+    using ProxyUpdateEvent = Event<size_t, uint8_t, uint8_t>; // <index, previous, current>
+    using ProxyUpdateEventListener = EventListener<size_t, uint8_t, uint8_t>;
 
-    using DataSourceFlagUpdatedHandler = std::function<void(bool, bool)>;
-    using DataSourceByteUpdatedHandler = std::function<void(uint8_t, uint8_t)>;
+    using ProxyFlagUpdatedHandler = std::function<void(bool, bool)>;
+    using ProxyByteUpdatedHandler = std::function<void(uint8_t, uint8_t)>;
 
 #if CAMPAIGN_LIBRARY_TESTING
     namespace testing
@@ -26,14 +26,12 @@ namespace campaign
     }
 #endif
 
-    class DataSource
+    class Proxy
     {
     public:
-        DataSource();
-        DataSource(size_t size);
-
-        void init();
-        void init(const uint8_t *copyPtr);
+        Proxy();
+        Proxy(const std::span<uint8_t> &span);
+        Proxy(uint8_t *first, uint8_t *last);
 
         bool setFlag(size_t index, uint8_t flagMask, bool value);
         bool setByte(size_t index, uint8_t value);
@@ -44,8 +42,8 @@ namespace campaign
             setBlock(index, &value, sizeof(T));
         }
 
-        EventListenerToken registerFlagCallback(size_t index, uint8_t flagMask, const DataSourceFlagUpdatedHandler &handler);
-        EventListenerToken registerByteCallback(size_t index, const DataSourceByteUpdatedHandler &handler);
+        EventListenerToken registerFlagCallback(size_t index, uint8_t flagMask, const ProxyFlagUpdatedHandler &handler);
+        EventListenerToken registerByteCallback(size_t index, const ProxyByteUpdatedHandler &handler);
 
         void unregisterUpdateCallback(EventListenerKey key);
 
@@ -62,9 +60,9 @@ namespace campaign
         const std::uint8_t *getDataPtr() const;
 
     private:
-        std::vector<uint8_t> data_;
+        std::span<uint8_t> data_;
 
-        DataSourceUpdateEvent updateEvent_;
+        ProxyUpdateEvent updateEvent_;
 
         void setBlock(size_t index, const void *ptr, size_t range);
 

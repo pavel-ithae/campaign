@@ -4,14 +4,28 @@ using namespace campaign;
 
 DataDomain::DataDomain(const std::vector<Entry> &entries)
 {
-    sources_.reserve(entries.size());
+    size_t sizeTotal = 0;
+    for (auto e : entries)
+    {
+        sizeTotal += e.layout.getDataSize();
+    }
+
+    data_.resize(sizeTotal);
+    std::fill(data_.begin(), data_.end(), 0);
+
+    auto ptr = data_.begin();
+
+    proxies_.reserve(entries.size());
     locators_.reserve(entries.size());
 
     for (auto e : entries)
     {
-        sources_.push_back(std::make_shared<DataSource>(e.layout.getDataSize()));
-        
-        locators_.insert({e.id, DataLocator(e.layout, sources_.back())});
+        auto endPtr = std::next(ptr, e.layout.getDataSize());
+
+        proxies_.push_back(std::make_shared<Proxy>(ptr.base(), endPtr.base()));
+        locators_.insert({e.id, DataLocator(e.layout, proxies_.back())});
+
+        ptr = endPtr;
     }
 }
 

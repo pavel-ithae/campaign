@@ -5,26 +5,26 @@ using namespace campaign;
 
 bool DataToken::isValid() const
 {
-    return sourcePtr_.use_count() > 0;
+    return proxyPtr_.use_count() > 0;
 }
 
-DataToken::DataToken(const std::weak_ptr<DataSource> &sourcePtr)
-    : sourcePtr_(sourcePtr)
+DataToken::DataToken(const std::weak_ptr<Proxy> &proxyPtr)
+    : proxyPtr_(proxyPtr)
 {
 }
 
-DataSource &DataToken::getSource() const
+Proxy &DataToken::getSource() const
 {
     if (!isValid())
     {
         throw std::runtime_error("Trying to get data from an expired token.");
     }
 
-    return *sourcePtr_.lock();
+    return *proxyPtr_.lock();
 }
 
-DataFlagToken::DataFlagToken(const std::weak_ptr<DataSource> &sourcePtr, size_t index, uint8_t flagMask)
-    : DataToken(sourcePtr), index_(index), flagMask_(flagMask)
+DataFlagToken::DataFlagToken(const std::weak_ptr<Proxy> &proxyPtr, size_t index, uint8_t flagMask)
+    : DataToken(proxyPtr), index_(index), flagMask_(flagMask)
 {
 }
 
@@ -38,12 +38,12 @@ bool DataFlagToken::get() const
     return getSource().getFlag(index_, flagMask_);
 }
 
-EventListenerToken DataFlagToken::registerCallback(const DataSourceFlagUpdatedHandler &handler)
+EventListenerToken DataFlagToken::registerCallback(const ProxyFlagUpdatedHandler &handler)
 {
     return getSource().registerFlagCallback(index_, flagMask_, handler);
 }
 
-campaign::DataByteToken::DataByteToken(const std::weak_ptr<DataSource> &sourcePtr, size_t index)
+campaign::DataByteToken::DataByteToken(const std::weak_ptr<Proxy> &sourcePtr, size_t index)
     : DataToken(sourcePtr), index_(index)
 {
 }
@@ -58,7 +58,7 @@ uint8_t DataByteToken::get() const
     return getSource().getByte(index_);
 }
 
-EventListenerToken campaign::DataByteToken::registerCallback(const DataSourceByteUpdatedHandler &handler)
+EventListenerToken campaign::DataByteToken::registerCallback(const ProxyByteUpdatedHandler &handler)
 {
     return getSource().registerByteCallback(index_, handler);
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <campaign/data_source.hpp>
+#include <campaign/proxy.hpp>
 #include <campaign/data_locator.hpp>
 #include <vector>
 #include <unordered_map>
@@ -27,7 +27,8 @@ namespace campaign
         DataDynamicToken<T> getDynamicToken(const std::string locationID, const std::string dynamicID);
 
     private:
-        std::vector<std::shared_ptr<DataSource>> sources_;
+        std::vector<uint8_t> data_;
+        std::vector<std::shared_ptr<Proxy>> proxies_;
         std::unordered_map<std::string, DataLocator> locators_;
     };
 

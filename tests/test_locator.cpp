@@ -4,15 +4,15 @@
 using namespace campaign;
 
 #define INIT_LOCATOR_TEST_DATA() \
-    std::unique_ptr<DataLayout> layoutPtr; \
-    std::shared_ptr<DataSource> sourcePtr; \
-    initTestData(layoutPtr, sourcePtr); \
-    DataLocator locator(*layoutPtr, sourcePtr);
+    std::unique_ptr<DataLayout> layoutPtr = std::make_unique<DataLayout>(7); \
+    initLayout(layoutPtr); \
+    std::vector<uint8_t> data(layoutPtr->getDataSize()); \
+    std::fill(data.begin(), data.end(), 0); \
+    std::shared_ptr<Proxy> proxyPtr = std::make_shared<Proxy>(data.begin().base(), data.end().base()); \
+    DataLocator locator(*layoutPtr, proxyPtr)
 
-void initTestData(std::unique_ptr<DataLayout> &layoutPtr, std::shared_ptr<DataSource> &source)
+void initLayout(std::unique_ptr<DataLayout> &layoutPtr)
 {
-    layoutPtr = std::make_unique<DataLayout>(7);
-
     layoutPtr->pushFlag("flag_first");
 
     layoutPtr->pushByte("byte_first");
@@ -25,9 +25,6 @@ void initTestData(std::unique_ptr<DataLayout> &layoutPtr, std::shared_ptr<DataSo
     layoutPtr->pushFlag("flag_fourth");
 
     layoutPtr->pushByte("byte_second");
-
-    source = std::make_shared<DataSource>(layoutPtr->getDataSize());
-    source->init();
 }
 
 TEST_CASE("Locator Init", "[locator]")

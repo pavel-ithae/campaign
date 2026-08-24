@@ -23,11 +23,11 @@ namespace campaign
 
     class IEvent
     {
-    protected:
-        IEvent() {}
-
     public:
         virtual void unregisterCallback(EventListenerKey key) = 0;
+
+    protected:
+        IEvent() {}
     };
 
     template <typename... TArgs>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <campaign/data_source.hpp>
+#include <campaign/proxy.hpp>
 #include <campaign/data_layout.hpp>
 #include <campaign/data_token.hpp>
 #include <string>
@@ -12,7 +12,7 @@ namespace campaign
     class DataLocator
     {
     public:
-        DataLocator(const DataLayout& layout, const std::weak_ptr<DataSource> &sourcePtr);
+        DataLocator(const DataLayout& layout, const std::weak_ptr<Proxy> &proxyPtr);
 
         // TODO: Add register callback functions and have tokens call these instead.
 
@@ -36,7 +36,7 @@ namespace campaign
 
     private:
         const DataLayout layout_;
-        const std::weak_ptr<DataSource> sourcePtr_;
+        const std::weak_ptr<Proxy> proxyPtr_;
     };
 
     #include "data_locator.tpp"

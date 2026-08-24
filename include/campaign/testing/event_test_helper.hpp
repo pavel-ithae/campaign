@@ -2,7 +2,7 @@
 
 #if CAMPAIGN_LIBRARY_TESTING
 
-#include <campaign/data_source.hpp>
+#include <campaign/proxy.hpp>
 #include <cstdint>
 
 namespace campaign::testing
@@ -18,14 +18,14 @@ namespace campaign::testing
             return event.listenersMap_;
         }
 
-        static const DataSourceUpdateEvent &getUpdateEvent(const DataSource &source)
+        static const ProxyUpdateEvent &getUpdateEvent(const Proxy &proxy)
         {
-            return source.updateEvent_;
+            return proxy.updateEvent_;
         }
 
-        static const std::unordered_map<EventListenerKey, std::shared_ptr<DataSourceUpdateEventListener>> &getUpdateEventListenerMap(const DataSource &source)
+        static const std::unordered_map<EventListenerKey, std::shared_ptr<ProxyUpdateEventListener>> &getUpdateEventListenerMap(const Proxy &proxy)
         {
-            return getListenerMap<size_t, uint8_t, uint8_t>(source.updateEvent_);
+            return getListenerMap<size_t, uint8_t, uint8_t>(proxy.updateEvent_);
         }
     };
 }
