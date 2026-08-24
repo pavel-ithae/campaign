@@ -13,26 +13,26 @@ namespace campaign
     public:
         Locator(const Layout &layout, const std::weak_ptr<Proxy> &proxyPtr);
 
-        void setFlag(std::string id, bool value);
-        void setByte(std::string id, uint8_t value);
+        void setFlag(const std::string &id, bool value);
+        void setByte(const std::string &id, uint8_t value);
 
         template <typename T>
-        void set(std::string id, const T &value);
+        void set(const std::string &id, const T &value);
 
-        EventListenerToken registerFlagCallback(std::string id, const ProxyFlagUpdatedHandler &handler);
-        EventListenerToken registerByteCallback(std::string id, const ProxyByteUpdatedHandler &handler);
+        EventListenerToken registerFlagCallback(const std::string &id, const ProxyFlagUpdatedHandler &handler);
+        EventListenerToken registerByteCallback(const std::string &id, const ProxyByteUpdatedHandler &handler);
 
-        bool getFlag(std::string id);
-        uint8_t getByte(std::string id);
-
-        template <typename T>
-        T get(std::string id);
-
-        ProxyFlagToken getFlagToken(std::string id);
-        ProxyByteToken getByteToken(std::string id);
+        bool getFlag(const std::string &id);
+        uint8_t getByte(const std::string &id);
 
         template <typename T>
-        ProxyDynamicToken<T> getDynamicToken(std::string id);
+        T get(const std::string &id);
+
+        ProxyFlagToken getFlagToken(const std::string &id);
+        ProxyByteToken getByteToken(const std::string &id);
+
+        template <typename T>
+        ProxyDynamicToken<T> getDynamicToken(const std::string &id);
 
     private:
         const Layout layout_;

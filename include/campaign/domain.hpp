@@ -9,7 +9,7 @@
 
 namespace campaign
 {
-    class DataDomain
+    class Domain
     {
     public:
         struct Entry
@@ -18,10 +18,22 @@ namespace campaign
             Layout layout;
         };
 
-        DataDomain(const std::vector<Entry> &entries);
+        Domain(const std::vector<Entry> &entries);
+
+        void setFlag(const std::string &locationID, const std::string &flagID, bool value);
+        void setByte(const std::string &locationID, const std::string &byteID, std::uint8_t value);
+
+        template <typename T>
+        void set(const std::string &locationID, const std::string &dynamicID, const T &value);
+
+        bool getFlag(const std::string &locationID, const std::string &flagID);
+        std::uint8_t getByte(const std::string &locationID, const std::string &byteID);
 
         ProxyFlagToken getFlagToken(const std::string &locationID, const std::string &flagID);
         ProxyByteToken getByteToken(const std::string &locationID, const std::string &byteID);
+
+        template <typename T>
+        T get(const std::string &locationID, const std::string &dynamicID);
         
         template <typename T>
         ProxyDynamicToken<T> getDynamicToken(const std::string locationID, const std::string dynamicID);
@@ -32,5 +44,5 @@ namespace campaign
         std::unordered_map<std::string, Locator> locators_;
     };
 
-    #include "data_domain.tpp"
+#include "domain.tpp"
 }
