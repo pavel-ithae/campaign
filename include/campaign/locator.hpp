@@ -1,25 +1,26 @@
 #pragma once
 
-#include <campaign/proxy.hpp>
 #include <campaign/layout.hpp>
+#include <campaign/proxy.hpp>
 #include <string>
 #include <cinttypes>
 #include <unordered_map>
 
 namespace campaign
 {
-    class DataLocator
+    class Locator
     {
     public:
-        DataLocator(const Layout& layout, const std::weak_ptr<Proxy> &proxyPtr);
-
-        // TODO: Add register callback functions and have tokens call these instead.
+        Locator(const Layout &layout, const std::weak_ptr<Proxy> &proxyPtr);
 
         void setFlag(std::string id, bool value);
         void setByte(std::string id, uint8_t value);
 
         template <typename T>
         void set(std::string id, const T &value);
+
+        EventListenerToken registerFlagCallback(std::string id, const ProxyFlagUpdatedHandler &handler);
+        EventListenerToken registerByteCallback(std::string id, const ProxyByteUpdatedHandler &handler);
 
         bool getFlag(std::string id);
         uint8_t getByte(std::string id);
@@ -38,5 +39,5 @@ namespace campaign
         const std::weak_ptr<Proxy> proxyPtr_;
     };
 
-    #include "data_locator.tpp"
+#include "locator.tpp"
 }

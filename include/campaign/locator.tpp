@@ -1,5 +1,5 @@
 template <typename T>
-void DataLocator::set(std::string id, const T &value)
+void Locator::set(std::string id, const T &value)
 {
     auto info = layout_.getDynamicInfo(id, sizeof(T));
 
@@ -7,7 +7,7 @@ void DataLocator::set(std::string id, const T &value)
 }
 
 template <typename T>
-T DataLocator::get(std::string id)
+T Locator::get(std::string id)
 {
     auto info = layout_.getDynamicInfo(id, sizeof(T));
 
@@ -15,7 +15,7 @@ T DataLocator::get(std::string id)
 }
 
 template <typename T>
-ProxyDynamicToken<T> DataLocator::getDynamicToken(std::string id)
+ProxyDynamicToken<T> Locator::getDynamicToken(std::string id)
 {
     auto info = layout_.getDynamicInfo(id, sizeof(T));
 

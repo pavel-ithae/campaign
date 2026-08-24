@@ -1,5 +1,4 @@
 #include <campaign/layout.hpp>
-#include <assert.h>
 
 using namespace campaign;
 

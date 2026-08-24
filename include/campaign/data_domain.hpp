@@ -1,7 +1,7 @@
 #pragma once
 
 #include <campaign/proxy.hpp>
-#include <campaign/data_locator.hpp>
+#include <campaign/locator.hpp>
 #include <vector>
 #include <unordered_map>
 #include <memory>
@@ -29,7 +29,7 @@ namespace campaign
     private:
         std::vector<uint8_t> data_;
         std::vector<std::shared_ptr<Proxy>> proxies_;
-        std::unordered_map<std::string, DataLocator> locators_;
+        std::unordered_map<std::string, Locator> locators_;
     };
 
     #include "data_domain.tpp"

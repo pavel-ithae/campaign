@@ -1,5 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
-#include <campaign/data_locator.hpp>
+#include <campaign/locator.hpp>
 
 using namespace campaign;
 
@@ -9,7 +9,7 @@ using namespace campaign;
     std::vector<uint8_t> data(layoutPtr->getDataSize()); \
     std::fill(data.begin(), data.end(), 0); \
     std::shared_ptr<Proxy> proxyPtr = std::make_shared<Proxy>(data.begin().base(), data.end().base()); \
-    DataLocator locator(*layoutPtr, proxyPtr)
+    Locator locator(*layoutPtr, proxyPtr)
 
 void initLayout(std::unique_ptr<Layout> &layoutPtr)
 {

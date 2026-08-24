@@ -23,7 +23,7 @@ DataDomain::DataDomain(const std::vector<Entry> &entries)
         auto endPtr = std::next(ptr, e.layout.getDataSize());
 
         proxies_.push_back(std::make_shared<Proxy>(ptr.base(), endPtr.base()));
-        locators_.insert({e.id, DataLocator(e.layout, proxies_.back())});
+        locators_.insert({e.id, Locator(e.layout, proxies_.back())});
 
         ptr = endPtr;
     }
