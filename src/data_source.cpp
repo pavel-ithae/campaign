@@ -146,7 +146,7 @@ void DataSource::notifyByteUpdated(size_t index, uint8_t previous, uint8_t curre
     updateEvent_.call(index, previous, current);
 }
 
-DataSourceEventListenerToken DataSource::registerFlagCallback(size_t index, uint8_t flagMask, const DataSourceFlagUpdatedHandler &handler)
+EventListenerToken DataSource::registerFlagCallback(size_t index, uint8_t flagMask, const DataSourceFlagUpdatedHandler &handler)
 {
     return updateEvent_.registerCallback([index, flagMask, handler](size_t eventIndex, uint8_t previous, uint8_t current)
                             { 
@@ -170,7 +170,7 @@ DataSourceEventListenerToken DataSource::registerFlagCallback(size_t index, uint
                                 } });
 }
 
-DataSourceEventListenerToken DataSource::registerByteCallback(size_t index, const DataSourceByteUpdatedHandler &handler)
+EventListenerToken DataSource::registerByteCallback(size_t index, const DataSourceByteUpdatedHandler &handler)
 {
     return updateEvent_.registerCallback([index, handler](size_t eventIndex, uint8_t previous, uint8_t current)
                             {
@@ -182,7 +182,7 @@ DataSourceEventListenerToken DataSource::registerByteCallback(size_t index, cons
                             handler(previous, current); });
 }
 
-void DataSource::unregisterUpdateCallback(DataSourceEventHandlerKey key)
+void DataSource::unregisterUpdateCallback(EventListenerKey key)
 {
     updateEvent_.unregisterCallback(key);
 }

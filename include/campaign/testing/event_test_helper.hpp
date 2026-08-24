@@ -2,18 +2,18 @@
 
 #if CAMPAIGN_LIBRARY_TESTING
 
-#include <campaign/data_source_events.hpp>
+#include <campaign/data_source.hpp>
 #include <cstdint>
 
 namespace campaign::testing
 {
-    class DataSourceEventTest
+    class EventTestHelper
     {
     public:
-        DataSourceEventTest() = delete;
+        EventTestHelper() = delete;
 
         template <typename... TArgs>
-        static const std::unordered_map<DataSourceEventHandlerKey, std::shared_ptr<typename DataSourceEvent<TArgs...>::Listener>> &getListenerMap(const DataSourceEvent<TArgs...> &event)
+        static const std::unordered_map<EventListenerKey, std::shared_ptr<typename Event<TArgs...>::Listener>> &getListenerMap(const Event<TArgs...> &event)
         {
             return event.listenersMap_;
         }
@@ -23,7 +23,7 @@ namespace campaign::testing
             return source.updateEvent_;
         }
 
-        static const std::unordered_map<DataSourceEventHandlerKey, std::shared_ptr<DataSourceUpdateEventListener>> &getUpdateEventListenerMap(const DataSource &source)
+        static const std::unordered_map<EventListenerKey, std::shared_ptr<DataSourceUpdateEventListener>> &getUpdateEventListenerMap(const DataSource &source)
         {
             return getListenerMap<size_t, uint8_t, uint8_t>(source.updateEvent_);
         }

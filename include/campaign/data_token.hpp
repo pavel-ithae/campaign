@@ -28,7 +28,7 @@ namespace campaign
         void set(bool value) const;
         bool get() const;
 
-        DataSourceEventListenerToken registerCallback(const DataSourceFlagUpdatedHandler &handler);
+        EventListenerToken registerCallback(const DataSourceFlagUpdatedHandler &handler);
 
     private:
         const size_t index_;
@@ -43,7 +43,7 @@ namespace campaign
         void set(uint8_t byte) const;
         uint8_t get() const;
 
-        DataSourceEventListenerToken registerCallback(const DataSourceByteUpdatedHandler &handler);
+        EventListenerToken registerCallback(const DataSourceByteUpdatedHandler &handler);
 
     private:
         const size_t index_;

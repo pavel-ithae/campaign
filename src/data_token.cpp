@@ -38,7 +38,7 @@ bool DataFlagToken::get() const
     return getSource().getFlag(index_, flagMask_);
 }
 
-DataSourceEventListenerToken DataFlagToken::registerCallback(const DataSourceFlagUpdatedHandler &handler)
+EventListenerToken DataFlagToken::registerCallback(const DataSourceFlagUpdatedHandler &handler)
 {
     return getSource().registerFlagCallback(index_, flagMask_, handler);
 }
@@ -58,7 +58,7 @@ uint8_t DataByteToken::get() const
     return getSource().getByte(index_);
 }
 
-DataSourceEventListenerToken campaign::DataByteToken::registerCallback(const DataSourceByteUpdatedHandler &handler)
+EventListenerToken campaign::DataByteToken::registerCallback(const DataSourceByteUpdatedHandler &handler)
 {
     return getSource().registerByteCallback(index_, handler);
 }

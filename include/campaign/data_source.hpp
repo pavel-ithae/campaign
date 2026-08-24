@@ -6,17 +6,23 @@
 #define CAMPAIGN_SOURCE_CHECK_BOUNDS 1
 #endif
 
-#include <campaign/data_source_events.hpp>
+#include <campaign/event.hpp>
 #include <cstdint>
 #include <vector>
 #include <span>
 
 namespace campaign
 {
+    using DataSourceUpdateEvent = Event<size_t, uint8_t, uint8_t>; // <index, previous, current>
+    using DataSourceUpdateEventListener = EventListener<size_t, uint8_t, uint8_t>;
+
+    using DataSourceFlagUpdatedHandler = std::function<void(bool, bool)>;
+    using DataSourceByteUpdatedHandler = std::function<void(uint8_t, uint8_t)>;
+
 #if CAMPAIGN_LIBRARY_TESTING
     namespace testing
     {
-        class DataSourceEventTest;
+        class EventTestHelper;
     }
 #endif
 
@@ -38,10 +44,10 @@ namespace campaign
             setBlock(index, &value, sizeof(T));
         }
 
-        DataSourceEventListenerToken registerFlagCallback(size_t index, uint8_t flagMask, const DataSourceFlagUpdatedHandler &handler);
-        DataSourceEventListenerToken registerByteCallback(size_t index, const DataSourceByteUpdatedHandler &handler);
+        EventListenerToken registerFlagCallback(size_t index, uint8_t flagMask, const DataSourceFlagUpdatedHandler &handler);
+        EventListenerToken registerByteCallback(size_t index, const DataSourceByteUpdatedHandler &handler);
 
-        void unregisterUpdateCallback(DataSourceEventHandlerKey key);
+        void unregisterUpdateCallback(EventListenerKey key);
 
         bool getFlag(size_t index, uint8_t flagMask) const;
         uint8_t getByte(size_t index) const;
@@ -67,7 +73,7 @@ namespace campaign
         void *getBlock(size_t index, size_t range);
 
 #if CAMPAIGN_LIBRARY_TESTING
-        friend class testing::DataSourceEventTest;
+        friend class testing::EventTestHelper;
 #endif
     };
 }

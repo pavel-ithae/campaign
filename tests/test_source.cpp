@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 #include <campaign/data_source.hpp>
-#include <campaign/testing/data_source_events_test.hpp>
+#include <campaign/testing/event_test_helper.hpp>
 
 using namespace campaign;
 using namespace campaign::testing;
@@ -384,7 +384,7 @@ TEST_CASE("Source Event Clear", "[source]")
 
     source.init();
 
-    auto &eventMap = DataSourceEventTest::getUpdateEventListenerMap(source);
+    auto &eventMap = EventTestHelper::getUpdateEventListenerMap(source);
     REQUIRE(eventMap.size() == 0);
 
     auto aToken = source.registerFlagCallback(0, 0x1, flagCallback);
