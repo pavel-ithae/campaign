@@ -9,6 +9,7 @@
 #include <campaign/data_source_events.hpp>
 #include <cstdint>
 #include <vector>
+#include <span>
 
 namespace campaign
 {

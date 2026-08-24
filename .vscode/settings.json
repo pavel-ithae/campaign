@@ -1,4 +1,5 @@
 {
     "cmake.ctest.testExplorerIntegrationEnabled": true,
-    "cmake.buildDirectory": "${workspaceFolder}/build"
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "C_Cpp.default.cStandard": "c23"
 }

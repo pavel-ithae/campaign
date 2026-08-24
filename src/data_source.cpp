@@ -121,13 +121,13 @@ void DataSource::setBlock(size_t index, const void *ptr, size_t range)
 {
     CHECK_DATA_BOUNDS(index + (range - 1));
 
-    for (size_t i = index; i < range; ++i)
+    for (size_t i = 0; i < range; ++i)
     {
 #ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpointer-arith"
 #endif
-        data_[i] = *static_cast<const uint8_t*>(ptr + i);
+        data_[index + i] = *static_cast<const uint8_t*>(ptr + i);
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif

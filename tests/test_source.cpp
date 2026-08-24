@@ -99,7 +99,7 @@ TEST_CASE("Source Bytes", "[source]")
 
 TEST_CASE("Source Dynamic", "[source]")
 {
-    DataSource source(4);
+    DataSource source(8);
 
     source.init();
 
@@ -110,6 +110,10 @@ TEST_CASE("Source Dynamic", "[source]")
     REQUIRE(source.getByte(1) == 0);
     REQUIRE(source.getByte(2) == 0);
     REQUIRE(source.getByte(3) == 0);
+    REQUIRE(source.getByte(4) == 0);
+    REQUIRE(source.getByte(5) == 0);
+    REQUIRE(source.getByte(6) == 0);
+    REQUIRE(source.getByte(7) == 0);
 
     source.set<uint32_t>(0, 256);
     REQUIRE(source.get<uint32_t>(0) == 256);
@@ -117,6 +121,21 @@ TEST_CASE("Source Dynamic", "[source]")
     REQUIRE(source.getByte(1) == 1);
     REQUIRE(source.getByte(2) == 0);
     REQUIRE(source.getByte(3) == 0);
+    REQUIRE(source.getByte(4) == 0);
+    REQUIRE(source.getByte(5) == 0);
+    REQUIRE(source.getByte(6) == 0);
+    REQUIRE(source.getByte(7) == 0);
+
+    source.set<uint32_t>(3, 255);
+    REQUIRE(source.get<uint32_t>(3) == 255);
+    REQUIRE(source.getByte(0) == 0);
+    REQUIRE(source.getByte(1) == 1);
+    REQUIRE(source.getByte(2) == 0);
+    REQUIRE(source.getByte(3) == 255);
+    REQUIRE(source.getByte(4) == 0);
+    REQUIRE(source.getByte(5) == 0);
+    REQUIRE(source.getByte(6) == 0);
+    REQUIRE(source.getByte(7) == 0);
 }
 
 #if CAMPAIGN_SOURCE_CHECK_BOUNDS

@@ -8,6 +8,8 @@
 
 namespace campaign
 {
+    // TODO: Isolated from DataSource.
+
     class IDataSourceEvent; // Forward declaration for tokens.
 
 #if CAMPAIGN_LIBRARY_TESTING

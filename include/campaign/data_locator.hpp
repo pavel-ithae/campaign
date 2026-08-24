@@ -14,6 +14,8 @@ namespace campaign
     public:
         DataLocator(const DataLayout& layout, const std::weak_ptr<DataSource> &sourcePtr);
 
+        // TODO: Add register callback functions and have tokens call these instead.
+
         void setFlag(std::string id, bool value);
         void setByte(std::string id, uint8_t value);
 
