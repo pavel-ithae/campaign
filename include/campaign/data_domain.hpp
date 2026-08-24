@@ -15,7 +15,7 @@ namespace campaign
         struct Entry
         {
             std::string id;
-            DataLayout layout;
+            Layout layout;
         };
 
         DataDomain(const std::vector<Entry> &entries);

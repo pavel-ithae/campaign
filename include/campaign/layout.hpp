@@ -1,6 +1,6 @@
 #pragma once
 
-#include <campaign/data_descriptor.hpp>
+#include <campaign/descriptor.hpp>
 #include <unordered_map>
 #include <string>
 
@@ -9,17 +9,17 @@ namespace campaign
 #if CAMPAIGN_LIBRARY_TESTING
     namespace testing
     {
-        class DataLaoutTest;
+        class LayoutTestHelper;
     }
 #endif
 
-    class DataLayout
+    class Layout
     {
     public:
-        DataLayout();
-        DataLayout(size_t descriptorCount);
+        Layout();
+        Layout(size_t descriptorCount);
 
-        const DataDescriptor &operator[](const std::string &id) const;
+        const Descriptor &operator[](const std::string &id) const;
 
         void pushFlag(const std::string &id);
         void pushFlag();
@@ -32,12 +32,12 @@ namespace campaign
 
         size_t getDataSize() const;
         
-        DataDescriptor::FlagDescription getFlagDescription(const std::string &id) const;
-        DataDescriptor::ByteDescription getByteDescription(const std::string &id) const;
-        DataDescriptor::DynamicDescription getDynamicDescription(const std::string &id, size_t expectedSize) const;
+        Descriptor::FlagInfo getFlagInfo(const std::string &id) const;
+        Descriptor::ByteInfo getByteInfo(const std::string &id) const;
+        Descriptor::DynamicInfo getDynamicInfo(const std::string &id, size_t expectedSize) const;
 
     private:
-        std::unordered_map<std::string, DataDescriptor> descriptorMap_;
+        std::unordered_map<std::string, Descriptor> descriptorMap_;
         size_t cursor_;
         uint8_t flagCursor_;
 
@@ -47,7 +47,7 @@ namespace campaign
         void stepToFreeByte();
 
 #if CAMPAIGN_LIBRARY_TESTING
-        friend class testing::DataLaoutTest;
+        friend class testing::LayoutTestHelper;
 #endif
     };
 }

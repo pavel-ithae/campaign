@@ -4,14 +4,14 @@
 using namespace campaign;
 
 #define INIT_LOCATOR_TEST_DATA() \
-    std::unique_ptr<DataLayout> layoutPtr = std::make_unique<DataLayout>(7); \
+    std::unique_ptr<Layout> layoutPtr = std::make_unique<Layout>(7); \
     initLayout(layoutPtr); \
     std::vector<uint8_t> data(layoutPtr->getDataSize()); \
     std::fill(data.begin(), data.end(), 0); \
     std::shared_ptr<Proxy> proxyPtr = std::make_shared<Proxy>(data.begin().base(), data.end().base()); \
     DataLocator locator(*layoutPtr, proxyPtr)
 
-void initLayout(std::unique_ptr<DataLayout> &layoutPtr)
+void initLayout(std::unique_ptr<Layout> &layoutPtr)
 {
     layoutPtr->pushFlag("flag_first");
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <campaign/data_layout.tpp>
+#include <campaign/layout.tpp>
 
 #if CAMPAIGN_LIBRARY_TESTING
 namespace campaign::testing
