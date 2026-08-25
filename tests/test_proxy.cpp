@@ -1,7 +1,3 @@
-// TODO: Add tests:
-// - Make sure it doesn't edit outside the data source.
-// - Test for tokens.
-
 #include <catch2/catch_test_macros.hpp>
 #include <campaign/proxy.hpp>
 #include <campaign/testing/event_test_helper.hpp>
@@ -379,4 +375,156 @@ TEST_CASE("Proxy Event Clear", "[proxy]")
 
     bToken.unregister();
     REQUIRE(eventMap.size() == 0);
+}
+
+TEST_CASE("Proxy Flag Tokens", "[proxy]")
+{
+    INIT_SOURCE_DATA(data, 4);
+    auto proxyPtr = std::make_shared<Proxy>(data.begin(), data.end());
+
+    auto aToken = ProxyFlagToken(proxyPtr, 0, 0x1 << 0);
+    auto bToken = ProxyFlagToken(proxyPtr, 0, 0x1 << 3);
+
+    REQUIRE(aToken.get() == false);
+    REQUIRE(bToken.get() == false);
+
+    aToken.set(true);
+
+    REQUIRE(aToken.get() == true);
+    REQUIRE(bToken.get() == false);
+
+    bToken.set(true);
+
+    REQUIRE(aToken.get() == true);
+    REQUIRE(bToken.get() == true);
+
+    REQUIRE(proxyPtr->getFlag(0, 0x1 << 0) == true);
+    REQUIRE(proxyPtr->getFlag(0, 0x1 << 1) == false);
+    REQUIRE(proxyPtr->getFlag(0, 0x1 << 2) == false);
+    REQUIRE(proxyPtr->getFlag(0, 0x1 << 3) == true);
+    REQUIRE(proxyPtr->getFlag(1, 0x1 << 0) == false);
+    REQUIRE(proxyPtr->getFlag(1, 0x1 << 1) == false);
+    REQUIRE(proxyPtr->getFlag(1, 0x1 << 2) == false);
+    REQUIRE(proxyPtr->getFlag(1, 0x1 << 3) == false);
+
+    aToken = ProxyFlagToken(proxyPtr, 1, 0x1 << 1);
+    bToken = ProxyFlagToken(proxyPtr, 1, 0x1 << 2);
+
+    REQUIRE(aToken.get() == false);
+    REQUIRE(bToken.get() == false);
+
+    bToken.set(true);
+
+    REQUIRE(aToken.get() == false);
+    REQUIRE(bToken.get() == true);
+
+    aToken.set(true);
+
+    REQUIRE(aToken.get() == true);
+    REQUIRE(bToken.get() == true);
+
+    REQUIRE(proxyPtr->getFlag(0, 0x1 << 0) == true);
+    REQUIRE(proxyPtr->getFlag(0, 0x1 << 1) == false);
+    REQUIRE(proxyPtr->getFlag(0, 0x1 << 2) == false);
+    REQUIRE(proxyPtr->getFlag(0, 0x1 << 3) == true);
+    REQUIRE(proxyPtr->getFlag(1, 0x1 << 0) == false);
+    REQUIRE(proxyPtr->getFlag(1, 0x1 << 1) == true);
+    REQUIRE(proxyPtr->getFlag(1, 0x1 << 2) == true);
+    REQUIRE(proxyPtr->getFlag(1, 0x1 << 3) == false);
+}
+
+TEST_CASE("Proxy Byte Tokens", "[proxy]")
+{
+    INIT_SOURCE_DATA(data, 4);
+    auto proxyPtr = std::make_shared<Proxy>(data.begin(), data.end());
+
+    ProxyByteToken aToken(proxyPtr, 0);
+    ProxyByteToken bToken(proxyPtr, 3);
+
+    REQUIRE(aToken.get() == 0);
+    REQUIRE(bToken.get() == 0);
+
+    aToken.set(12);
+
+    REQUIRE(aToken.get() == 12);
+    REQUIRE(bToken.get() == 0);
+
+    bToken.set(32);
+
+    REQUIRE(aToken.get() == 12);
+    REQUIRE(bToken.get() == 32);
+
+    REQUIRE(proxyPtr->getByte(0) == 12);
+    REQUIRE(proxyPtr->getByte(1) == 0);
+    REQUIRE(proxyPtr->getByte(2) == 0);
+    REQUIRE(proxyPtr->getByte(3) == 32);
+
+    aToken = ProxyByteToken(proxyPtr, 1);
+    bToken = ProxyByteToken(proxyPtr, 2);
+
+    REQUIRE(aToken.get() == 0);
+    REQUIRE(bToken.get() == 0);
+
+    bToken.set(255);
+
+    REQUIRE(aToken.get() == 0);
+    REQUIRE(bToken.get() == 255);
+
+    aToken.set(64);
+
+    REQUIRE(aToken.get() == 64);
+    REQUIRE(bToken.get() == 255);
+
+    REQUIRE(proxyPtr->getByte(0) == 12);
+    REQUIRE(proxyPtr->getByte(1) == 64);
+    REQUIRE(proxyPtr->getByte(2) == 255);
+    REQUIRE(proxyPtr->getByte(3) == 32);
+}
+
+TEST_CASE("Proxy Dynamic Tokens", "[proxy]")
+{
+    INIT_SOURCE_DATA(data, 8);
+    auto proxyPtr = std::make_shared<Proxy>(data.begin(), data.end());
+
+    ProxyDynamicToken<uint32_t> token(proxyPtr, 0);
+    REQUIRE(token.get() == 0);
+
+    token.set(255);
+    REQUIRE(token.get() == 255);
+
+    REQUIRE(proxyPtr->getByte(0) == 255);
+    REQUIRE(proxyPtr->getByte(1) == 0);
+    REQUIRE(proxyPtr->getByte(2) == 0);
+    REQUIRE(proxyPtr->getByte(3) == 0);
+    REQUIRE(proxyPtr->getByte(4) == 0);
+    REQUIRE(proxyPtr->getByte(5) == 0);
+    REQUIRE(proxyPtr->getByte(6) == 0);
+    REQUIRE(proxyPtr->getByte(7) == 0);
+
+    token.set(256);
+    REQUIRE(token.get() == 256);
+
+    REQUIRE(proxyPtr->getByte(0) == 0);
+    REQUIRE(proxyPtr->getByte(1) == 1);
+    REQUIRE(proxyPtr->getByte(2) == 0);
+    REQUIRE(proxyPtr->getByte(3) == 0);
+    REQUIRE(proxyPtr->getByte(4) == 0);
+    REQUIRE(proxyPtr->getByte(5) == 0);
+    REQUIRE(proxyPtr->getByte(6) == 0);
+    REQUIRE(proxyPtr->getByte(7) == 0);
+
+    token = ProxyDynamicToken<uint32_t>(proxyPtr, 3);
+    REQUIRE(token.get() == 0);
+
+    token.set(255);
+    REQUIRE(token.get() == 255);
+
+    REQUIRE(proxyPtr->getByte(0) == 0);
+    REQUIRE(proxyPtr->getByte(1) == 1);
+    REQUIRE(proxyPtr->getByte(2) == 0);
+    REQUIRE(proxyPtr->getByte(3) == 255);
+    REQUIRE(proxyPtr->getByte(4) == 0);
+    REQUIRE(proxyPtr->getByte(5) == 0);
+    REQUIRE(proxyPtr->getByte(6) == 0);
+    REQUIRE(proxyPtr->getByte(7) == 0);
 }

@@ -91,10 +91,10 @@ namespace campaign
         Proxy &getSource() const;
 
     private:
-        const std::weak_ptr<Proxy> proxyPtr_;
+        std::weak_ptr<Proxy> proxyPtr_;
     };
 
-    class ProxyFlagToken : ProxyToken
+    class ProxyFlagToken : public ProxyToken
     {
     public:
         ProxyFlagToken(const std::weak_ptr<Proxy> &proxyPtr, size_t index, uint8_t flagMask);
@@ -105,11 +105,11 @@ namespace campaign
         EventListenerToken registerCallback(const ProxyFlagUpdatedHandler &handler);
 
     private:
-        const size_t index_;
-        const uint8_t flagMask_;
+        size_t index_;
+        uint8_t flagMask_;
     };
 
-    class ProxyByteToken : ProxyToken
+    class ProxyByteToken : public ProxyToken
     {
     public:
         ProxyByteToken(const std::weak_ptr<Proxy> &proxyPtr, size_t index);
@@ -120,20 +120,20 @@ namespace campaign
         EventListenerToken registerCallback(const ProxyByteUpdatedHandler &handler);
 
     private:
-        const size_t index_;
+        size_t index_;
     };
 
     template <typename T>
-    class ProxyDynamicToken : ProxyToken
+    class ProxyDynamicToken : public ProxyToken
     {
     public:
         ProxyDynamicToken(const std::weak_ptr<Proxy> &proxyPtr, size_t index);
 
         void set(const T &value) const;
-        const T &get() const;
+        T get() const;
 
     private:
-        const size_t index_;
+        size_t index_;
     };
 
 #include "proxy.tpp"

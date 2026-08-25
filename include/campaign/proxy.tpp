@@ -11,7 +11,7 @@ void ProxyDynamicToken<T>::set(const T &value) const
 }
 
 template <typename T>
-inline const T &campaign::ProxyDynamicToken<T>::get() const
+inline T campaign::ProxyDynamicToken<T>::get() const
 {
     return getSource().get<T>(index_);
 }
