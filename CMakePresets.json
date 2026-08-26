@@ -17,9 +17,26 @@
             }
         },
         {
+            "name": "library_api",
+            "displayName": "Dynamic Library w/ API",
+            "inherits": "library",
+            "cacheVariables": {
+                "BUILD_CAMPAIGN_API": true
+            }
+        },
+        {
             "name": "library_tests",
             "displayName": "Static Library w/ Tests",
             "inherits": "library",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "BUILD_TESTING": true
+            }
+        },
+        {
+            "name": "library_api_tests",
+            "displayName": "Dynamic Library w/ API & Tests",
+            "inherits": "library_api",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "BUILD_TESTING": true
@@ -32,8 +49,16 @@
             "configurePreset": "library"
         },
         {
+            "name": "library_api",
+            "configurePreset": "library_api"
+        },
+        {
             "name": "library_tests",
             "configurePreset": "library_tests"
+        },
+        {
+            "name": "library_api_tests",
+            "configurePreset": "library_api_tests"
         }
     ]
 }
