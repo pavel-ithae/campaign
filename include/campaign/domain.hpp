@@ -2,6 +2,7 @@
 
 #include <campaign/proxy.hpp>
 #include <campaign/locator.hpp>
+#include <campaign/blueprint.hpp>
 #include <vector>
 #include <unordered_map>
 #include <memory>
@@ -18,7 +19,7 @@ namespace campaign
             Layout layout;
         };
 
-        Domain(const std::vector<Entry> &entries);
+        Domain(const Blueprint &blueprint);
 
         void setFlag(const std::string &locationID, const std::string &flagID, bool value);
         void setByte(const std::string &locationID, const std::string &byteID, std::uint8_t value);

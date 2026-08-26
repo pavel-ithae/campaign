@@ -1,13 +1,14 @@
 #include <campaign/domain.hpp>
+#include <span>
 
 using namespace campaign;
 
-Domain::Domain(const std::vector<Entry> &entries)
+Domain::Domain(const Blueprint &blueprint)
 {
     size_t sizeTotal = 0;
-    for (auto e : entries)
+    for (auto p : blueprint)
     {
-        sizeTotal += e.layout.getDataSize();
+        sizeTotal += p.layout.getDataSize();
     }
 
     data_.resize(sizeTotal);
@@ -15,15 +16,15 @@ Domain::Domain(const std::vector<Entry> &entries)
 
     auto ptr = data_.begin();
 
-    proxies_.reserve(entries.size());
-    locators_.reserve(entries.size());
+    proxies_.reserve(blueprint.size());
+    locators_.reserve(blueprint.size());
 
-    for (auto e : entries)
+    for (auto p : blueprint)
     {
-        auto endPtr = std::next(ptr, e.layout.getDataSize());
+        auto endPtr = std::next(ptr, p.layout.getDataSize());
 
         proxies_.push_back(std::make_shared<Proxy>(ptr.base(), endPtr.base()));
-        locators_.insert({e.id, Locator(e.layout, proxies_.back())});
+        locators_.insert({p.id, Locator(p.layout, proxies_.back())});
 
         ptr = endPtr;
     }
