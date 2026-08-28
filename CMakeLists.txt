@@ -25,6 +25,7 @@ endif()
 
 set_target_properties(campaign PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
 )
 
 target_sources(campaign
@@ -49,5 +50,15 @@ if(BUILD_TESTING)
 
     if (BUILD_CAMPAIGN_API)
         add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests/api)
+
+        find_package(Python3 REQUIRED)
+
+        add_custom_command(TARGET campaign POST_BUILD
+            COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/copyLibCSharp.py
+            COMMENT "Copying library to CSharp test project...")
+
+        add_custom_target(campaign_csharp_tests
+            COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/runCSharpTest.py
+            COMMENT "Running CSharp tests...")
     endif()
 endif()

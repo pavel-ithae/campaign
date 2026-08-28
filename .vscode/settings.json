@@ -1,5 +1,6 @@
 {
     "cmake.ctest.testExplorerIntegrationEnabled": true,
     "cmake.buildDirectory": "${workspaceFolder}/build",
-    "C_Cpp.default.cStandard": "c23"
+    "C_Cpp.default.cStandard": "c23",
+    "dotnet.defaultSolution": "${workspaceFolder}/tests/csharp/CampaignCSharpTest.slnx"
 }

@@ -23,7 +23,6 @@
 *.dll
 *.so.*
 
-
 # Fortran module files
 *.mod
 *.smod
@@ -47,6 +46,10 @@ build-*/
 # Bin directories.
 bin/
 Bin/
+
+# C# obj directories.
+obj/
+Obj/
 
 # CMake generated files
 CMakeFiles/

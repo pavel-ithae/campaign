@@ -4,11 +4,11 @@
 
 using namespace campaign;
 
-void *campaign_layout_create(size_t descriptorCount)
+void *campaign_layout_create(int32_t descriptorCount)
 {
     Layout *layoutPtr = new Layout(descriptorCount);
 
-    std::cout << "Layout Created!\n";
+    std::cout << "Layout Created!!\n";
 
     return (void *)layoutPtr;
 }
