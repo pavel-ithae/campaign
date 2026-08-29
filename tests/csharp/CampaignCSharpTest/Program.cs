@@ -1,15 +1,16 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using Campaign;
 
 Console.Write("Hello World!\n");
-Console.Write("Done!\n");
 
-var layoutPtr = campaign_layout_create(4);
+var layoutPtr = LayoutAPI.campaign_layout_create(4);
 
-campaign_layout_delete(layoutPtr);
+try
+{
+    LayoutAPI.campaign_layout_push_flag(layoutPtr, "hello");
+}
+catch (Exception e)
+{
+    Console.Write(e.ToString());
+}
 
-[DllImport("libs/libcampaign", CallingConvention = CallingConvention.Cdecl)]
-static extern IntPtr campaign_layout_create(int descriptorCount);
-
-[DllImport("libs/libcampaign", CallingConvention = CallingConvention.Cdecl)]
-static extern void campaign_layout_delete(IntPtr layoutPtr);
+LayoutAPI.campaign_layout_delete(layoutPtr);

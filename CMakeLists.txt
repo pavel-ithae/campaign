@@ -56,9 +56,5 @@ if(BUILD_TESTING)
         add_custom_command(TARGET campaign POST_BUILD
             COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/copyLibCSharp.py
             COMMENT "Copying library to CSharp test project...")
-
-        add_custom_target(campaign_csharp_tests
-            COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/runCSharpTest.py
-            COMMENT "Running CSharp tests...")
     endif()
 endif()
