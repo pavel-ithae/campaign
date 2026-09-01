@@ -273,7 +273,7 @@ TEST_CASE("Layout Mixed Push", "[layout]")
     REQUIRE_THROWS(layout.getByteInfo("dynamic_int"));
 }
 
-TEST_CASE ("Layout Entry Exists")
+TEST_CASE ("Layout Entry Exists", "[layout]")
 {
     Layout layout(3);
 
@@ -290,7 +290,7 @@ TEST_CASE ("Layout Entry Exists")
     REQUIRE(layout.entryExists("dynamic_int"));
 }
 
-TEST_CASE ("Layout Get Entry Count")
+TEST_CASE ("Layout Get Entry Count", "[layout]")
 {
     Layout layout(3);
 
@@ -315,7 +315,7 @@ TEST_CASE ("Layout Get Entry Count")
     REQUIRE(layout.getEntryCount() == 3);
 }
 
-TEST_CASE ("Layout Get Data Size")
+TEST_CASE ("Layout Get Data Size", "[layout]")
 {
     Layout layout(5);
 
@@ -346,7 +346,7 @@ TEST_CASE ("Layout Get Data Size")
     REQUIRE(layout.getDataSize() == 13);
 }
 
-TEST_CASE("Layout Get Entry Info")
+TEST_CASE("Layout Get Entry Info", "[layout]")
 {
     Layout layout(5);
 
@@ -419,7 +419,7 @@ TEST_CASE("Layout Get Entry Info")
     REQUIRE_THROWS(layout.getEntryInfo(5));
 }
 
-TEST_CASE("Layout Get Flag Info")
+TEST_CASE("Layout Get Flag Info", "[layout]")
 {
     Layout layout(5);
 
@@ -457,7 +457,7 @@ TEST_CASE("Layout Get Flag Info")
     REQUIRE_THROWS(layout.getFlagInfo("dynamic"));
 }
 
-TEST_CASE("Layout Get Byte Info")
+TEST_CASE("Layout Get Byte Info", "[layout]")
 {
     Layout layout(4);
 
@@ -485,7 +485,7 @@ TEST_CASE("Layout Get Byte Info")
     REQUIRE_THROWS(layout.getByteInfo("dynamic"));
 }
 
-TEST_CASE("Layout Get Dynamic Info")
+TEST_CASE("Layout Get Dynamic Info", "[layout]")
 {
     Layout layout(4);
 
