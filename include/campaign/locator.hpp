@@ -37,6 +37,8 @@ namespace campaign
     private:
         const Layout layout_;
         const std::weak_ptr<Proxy> proxyPtr_;
+
+        void validateDynamicSize(size_t expectedSize, size_t actualSize);
     };
 
 #include "locator.tpp"

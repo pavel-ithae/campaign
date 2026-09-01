@@ -1,4 +1,5 @@
 #include <campaign/locator.hpp>
+#include <sstream>
 
 using namespace campaign;
 
@@ -61,4 +62,17 @@ ProxyByteToken Locator::getByteToken(const std::string &id)
     auto info = layout_.getByteInfo(id);
 
     return ProxyByteToken(proxyPtr_, info.index);
+}
+
+void Locator::validateDynamicSize(size_t expectedSize, size_t actualSize)
+{
+    if (expectedSize == actualSize)
+    {
+        return;
+    }
+
+    std::stringstream stream;
+    stream << "Trying to access a dynamic value of size \"" << expectedSize << "\" but it's actually of size \"" << actualSize << "\".";
+
+    throw std::logic_error(stream.str());
 }

@@ -25,18 +25,10 @@ std::string typeToString(Descriptor::Type type)
     }
 }
 
-std::string throwBadDescriptionTypeException(Descriptor::Type expectedType, Descriptor::Type actualType)
+void throwBadDescriptionTypeException(Descriptor::Type expectedType, Descriptor::Type actualType)
 {
     std::stringstream stream;
     stream << "Trying to get a \"" << typeToString(expectedType) << "\" info from a \"" << typeToString(actualType) << "\" descriptor.";
-
-    throw std::logic_error(stream.str());
-}
-
-std::string throwDynamicDescriptionSizeMismatchException(size_t expectedSize, size_t actualSize)
-{
-    std::stringstream stream;
-    stream << "Trying to get a dynamic info of size \"" << expectedSize << "\" but it's actually of size \"" << actualSize << "\".";
 
     throw std::logic_error(stream.str());
 }
@@ -86,19 +78,12 @@ Descriptor::ByteInfo Descriptor::getByteInfo() const
     return *dynamic_cast<ByteInfo*>(infoPtr_.get());
 }
 
-Descriptor::DynamicInfo Descriptor::getDynamicInfo(size_t expectedSize) const
+Descriptor::DynamicInfo Descriptor::getDynamicInfo() const
 {
     if (type_ != Type::Dynamic)
     {
         throwBadDescriptionTypeException(Type::Dynamic, type_);
     }
 
-    auto &desc = *dynamic_cast<DynamicInfo*>(infoPtr_.get());
-
-    if (desc.size != expectedSize)
-    {
-        throwDynamicDescriptionSizeMismatchException(expectedSize, desc.size);
-    }
-
-    return desc;
+    return *dynamic_cast<DynamicInfo*>(infoPtr_.get());
 };

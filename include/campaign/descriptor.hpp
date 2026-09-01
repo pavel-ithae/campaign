@@ -11,10 +11,10 @@ namespace campaign
     public:
         enum class Type
         {
+            Void,
             Flag,
             Byte,
-            Dynamic,
-            Void
+            Dynamic
         };
 
         struct Info
@@ -71,7 +71,7 @@ namespace campaign
 
         FlagInfo getFlagInfo() const;
         ByteInfo getByteInfo() const;
-        DynamicInfo getDynamicInfo(size_t expectedSize) const;
+        DynamicInfo getDynamicInfo() const;
 
     private:
         const Type type_;

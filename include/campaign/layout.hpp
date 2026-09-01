@@ -1,6 +1,7 @@
 #pragma once
 
 #include <campaign/descriptor.hpp>
+#include <vector>
 #include <unordered_map>
 #include <string>
 
@@ -16,8 +17,16 @@ namespace campaign
     class Layout
     {
     public:
+        struct EntryInfo
+        {
+            const std::string id;
+            const Descriptor descriptor;
+
+            EntryInfo(const std::string &id, const Descriptor &descriptor) : id(id), descriptor(descriptor) {}
+        };
+
         Layout();
-        Layout(size_t descriptorCount);
+        Layout(size_t entryCount);
 
         const Descriptor &operator[](const std::string &id) const;
 
@@ -30,11 +39,17 @@ namespace campaign
         void pushDynamic(const std::string &id, size_t size);
         void pushDynamic(size_t size);
 
+        bool entryExists(const std::string id) const;
+
+        size_t getEntryCount() const;
         size_t getDataSize() const;
-        
+
+        EntryInfo getEntryInfo(size_t index) const;
+        const Descriptor &getDescriptor(const std::string &id) const;
+
         Descriptor::FlagInfo getFlagInfo(const std::string &id) const;
         Descriptor::ByteInfo getByteInfo(const std::string &id) const;
-        Descriptor::DynamicInfo getDynamicInfo(const std::string &id, size_t expectedSize) const;
+        Descriptor::DynamicInfo getDynamicInfo(const std::string &id) const;
 
     private:
         std::unordered_map<std::string, Descriptor> descriptorMap_;
