@@ -1,5 +1,6 @@
 #include <campaign/api/api_layout.h>
 #include <campaign/layout.hpp>
+#include <cstring>
 #include <iostream>
 
 #if defined(_WIN32)
@@ -10,12 +11,6 @@ using namespace campaign;
 
 #define TO_LAYOUT_PTR(ptr) static_cast<Layout *>(ptr)
 #define TO_VOID_PTR(ptr) static_cast<void *>(ptr)
-
-#if defined(_WIN32) // Windows .NET assumed COM allocator.
-#define ALLOCATE_STRING(length) static_cast<char *>(CoTaskMemAlloc(sizeof(char) * length))
-#else
-#define ALLOCATE_STRING(length) static_cast<char *>(malloc(sizeof(char) * length))
-#endif
 
 void SetDescriptorVoid(campaign_descriptor_t &c_descriptor)
 {
@@ -59,9 +54,9 @@ void campaign_layout_delete(void *layoutPtr)
     delete TO_LAYOUT_PTR(layoutPtr);
 }
 
-void campaign_layout_push_flag(void *layoutPtr, const char *id, int32_t idLength)
+void campaign_layout_push_flag(void *layoutPtr, const char *id)
 {
-    TO_LAYOUT_PTR(layoutPtr)->pushFlag(std::string(id, idLength));
+    TO_LAYOUT_PTR(layoutPtr)->pushFlag(std::string(id));
 }
 
 void campaign_layout_push_flag_empty(void *layoutPtr)
@@ -69,9 +64,9 @@ void campaign_layout_push_flag_empty(void *layoutPtr)
     TO_LAYOUT_PTR(layoutPtr)->pushFlag();
 }
 
-void campaign_layout_push_byte(void *layoutPtr, const char *id, int32_t idLength)
+void campaign_layout_push_byte(void *layoutPtr, const char *id)
 {
-    TO_LAYOUT_PTR(layoutPtr)->pushByte(std::string(id, idLength));
+    TO_LAYOUT_PTR(layoutPtr)->pushByte(std::string(id));
 }
 
 void campaign_layout_push_byte_empty(void *layoutPtr)
@@ -79,9 +74,9 @@ void campaign_layout_push_byte_empty(void *layoutPtr)
     TO_LAYOUT_PTR(layoutPtr)->pushByte();
 }
 
-void campaign_layout_push_dynamic(void *layoutPtr, const char *id, int32_t idLength, int32_t size)
+void campaign_layout_push_dynamic(void *layoutPtr, const char *id, int32_t size)
 {
-    TO_LAYOUT_PTR(layoutPtr)->pushDynamic(std::string(id, idLength), size);
+    TO_LAYOUT_PTR(layoutPtr)->pushDynamic(std::string(id), size);
 }
 
 void campaign_layout_push_dynamic_empty(void *layoutPtr, int32_t size)
@@ -89,9 +84,9 @@ void campaign_layout_push_dynamic_empty(void *layoutPtr, int32_t size)
     TO_LAYOUT_PTR(layoutPtr)->pushDynamic(size);
 }
 
-bool campaign_layout_entry_exists(void *layoutPtr, const char *id, int32_t idLength)
+bool campaign_layout_entry_exists(void *layoutPtr, const char *id)
 {
-    return TO_LAYOUT_PTR(layoutPtr)->entryExists(std::string(id, idLength));
+    return TO_LAYOUT_PTR(layoutPtr)->entryExists(std::string(id));
 }
 
 int32_t campaign_layout_get_entry_count(void *layoutPtr)
@@ -107,10 +102,11 @@ int32_t campaign_layout_get_data_size(void *layoutPtr)
 campaign_layout_entry_info_t campaign_layout_get_entry_info(void *layoutPtr, int32_t index)
 {
     auto entryInfo = TO_LAYOUT_PTR(layoutPtr)->getEntryInfo(index);
+    size_t entryInfoIdLength = entryInfo.id.length();
 
     campaign_layout_entry_info_t c_entryInfo;
-    c_entryInfo.idLength = entryInfo.id.length();
-    c_entryInfo.id = ALLOCATE_STRING(c_entryInfo.idLength);
+    c_entryInfo.id = ALLOCATE_STRING(entryInfo.id.length());
+    std::memcpy(c_entryInfo.id, entryInfo.id.begin().base(), entryInfoIdLength + 1); // +1 to include null terminator.
 
     switch(entryInfo.descriptor.getType())
     {
@@ -134,9 +130,9 @@ campaign_layout_entry_info_t campaign_layout_get_entry_info(void *layoutPtr, int
     return c_entryInfo;
 }
 
-campaign_descriptor_t campaign_layout_get_descriptor(void *layoutPtr, const char *id, int32_t idLength)
+campaign_descriptor_t campaign_layout_get_descriptor(void *layoutPtr, const char *id)
 {
-    auto descriptor = TO_LAYOUT_PTR(layoutPtr)->getDescriptor(std::string(id, idLength));
+    auto descriptor = TO_LAYOUT_PTR(layoutPtr)->getDescriptor(std::string(id));
 
     campaign_descriptor_t c_descriptor;
 
@@ -162,9 +158,9 @@ campaign_descriptor_t campaign_layout_get_descriptor(void *layoutPtr, const char
     return c_descriptor;
 }
 
-campaign_flag_info_t campaign_layout_get_flag_info(void *layoutPtr, const char *id, int32_t idLength)
+campaign_flag_info_t campaign_layout_get_flag_info(void *layoutPtr, const char *id)
 {
-    auto flagInfo = TO_LAYOUT_PTR(layoutPtr)->getFlagInfo(std::string(id, idLength));
+    auto flagInfo = TO_LAYOUT_PTR(layoutPtr)->getFlagInfo(std::string(id));
 
     campaign_flag_info_t c_flagInfo;
     c_flagInfo.index = flagInfo.index;
@@ -173,9 +169,9 @@ campaign_flag_info_t campaign_layout_get_flag_info(void *layoutPtr, const char *
     return c_flagInfo;
 }
 
-campaign_byte_info_t campaign_layout_get_byte_info(void *layoutPtr, const char *id, int32_t idLength)
+campaign_byte_info_t campaign_layout_get_byte_info(void *layoutPtr, const char *id)
 {
-    auto byteInfo = TO_LAYOUT_PTR(layoutPtr)->getByteInfo(std::string(id, idLength));
+    auto byteInfo = TO_LAYOUT_PTR(layoutPtr)->getByteInfo(std::string(id));
 
     campaign_byte_info_t c_byteInfo;
     c_byteInfo.index = byteInfo.index;
@@ -183,9 +179,9 @@ campaign_byte_info_t campaign_layout_get_byte_info(void *layoutPtr, const char *
     return c_byteInfo;
 }
 
-campaign_dynamic_info_t campaign_layout_get_dynamic_info(void *layoutPtr, const char *id, int32_t idLength, int32_t expectedSize)
+campaign_dynamic_info_t campaign_layout_get_dynamic_info(void *layoutPtr, const char *id, int32_t expectedSize)
 {
-    auto dynamicInfo = TO_LAYOUT_PTR(layoutPtr)->getDynamicInfo(std::string(id, idLength));
+    auto dynamicInfo = TO_LAYOUT_PTR(layoutPtr)->getDynamicInfo(std::string(id));
 
     campaign_dynamic_info_t c_dynamicInfo;
     c_dynamicInfo.index = dynamicInfo.index;
