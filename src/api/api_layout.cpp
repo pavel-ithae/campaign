@@ -94,6 +94,16 @@ bool campaign_layout_entry_exists(void *layoutPtr, const char *id, int32_t idLen
     return TO_LAYOUT_PTR(layoutPtr)->entryExists(std::string(id, idLength));
 }
 
+int32_t campaign_layout_get_entry_count(void *layoutPtr)
+{
+    return TO_LAYOUT_PTR(layoutPtr)->getEntryCount();
+}
+
+int32_t campaign_layout_get_data_size(void *layoutPtr)
+{
+    return TO_LAYOUT_PTR(layoutPtr)->getDataSize();
+}
+
 campaign_layout_entry_info_t campaign_layout_get_entry_info(void *layoutPtr, int32_t index)
 {
     auto entryInfo = TO_LAYOUT_PTR(layoutPtr)->getEntryInfo(index);

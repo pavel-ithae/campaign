@@ -34,6 +34,10 @@ extern "C"
 
     CAMPAIGN_API bool campaign_layout_entry_exists(void *layoutPtr, const char* id, int32_t idLength);
 
+    CAMPAIGN_API int32_t campaign_layout_get_entry_count(void *layoutPtr);
+
+    CAMPAIGN_API int32_t campaign_layout_get_data_size(void *layoutPtr);
+
     CAMPAIGN_API campaign_layout_entry_info_t campaign_layout_get_entry_info(void *layoutPtr, int32_t index);
 
     CAMPAIGN_API campaign_descriptor_t campaign_layout_get_descriptor(void *layoutPtr, const char* id, int32_t idLength);
