@@ -1,6 +1,6 @@
 #pragma once
 
-#include <campaign/api/api_macros.h>
+#include <campaign/api/api_util.h>
 #include <campaign/api/api_descriptor.h>
 #include <stdint.h>
 #include <stdbool.h>

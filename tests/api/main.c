@@ -1,6 +1,10 @@
 #include <unity.h>
 #include <stdio.h>
+
 #include "test_api_layout.h"
+
+#include <campaign/api/api_except.h>
+#include <campaign/api/api_string.h>
 
 void setUp(void) 
 {

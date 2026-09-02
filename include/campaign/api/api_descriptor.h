@@ -1,6 +1,6 @@
 #pragma once
 
-#include <campaign/api/api_macros.h>
+#include <campaign/api/api_util.h>
 #include <stdint.h>
 
 #if __cplusplus

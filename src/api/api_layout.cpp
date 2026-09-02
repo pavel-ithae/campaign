@@ -1,4 +1,5 @@
 #include <campaign/api/api_layout.h>
+#include <campaign/api/api_string.h>
 #include <campaign/layout.hpp>
 #include <cstring>
 #include <iostream>
@@ -105,7 +106,7 @@ campaign_layout_entry_info_t campaign_layout_get_entry_info(void *layoutPtr, int
     size_t entryInfoIdLength = entryInfo.id.length();
 
     campaign_layout_entry_info_t c_entryInfo;
-    c_entryInfo.id = ALLOCATE_STRING(entryInfo.id.length());
+    c_entryInfo.id = campaign_string_allocate(entryInfo.id.length());
     std::memcpy(c_entryInfo.id, entryInfo.id.begin().base(), entryInfoIdLength + 1); // +1 to include null terminator.
 
     switch(entryInfo.descriptor.getType())
