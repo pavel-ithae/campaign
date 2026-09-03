@@ -5,7 +5,7 @@
 
 std::string lastExceptionMessage = "";
 
-void campaign_exception_push_message(char *message)
+void campaign_exception_push_message(const char *message)
 {
     lastExceptionMessage = std::string(message);
 }

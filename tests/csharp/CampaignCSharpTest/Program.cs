@@ -2,7 +2,7 @@
 
 Console.Write("Hello World!\n");
 
-var layoutPtr = LayoutAPI.campaign_layout_create(4);
+LayoutAPI.campaign_layout_create(4, out var layoutPtr);
 
 try
 {
@@ -14,3 +14,5 @@ catch (Exception e)
 }
 
 LayoutAPI.campaign_layout_delete(layoutPtr);
+
+Console.Write("Success!\n");
