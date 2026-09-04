@@ -4,7 +4,7 @@ import shutil
 
 root = path.dirname(path.dirname(path.realpath(__file__)))
 binDirectory = path.join(root, "bin")
-csharpLibDirectory = path.join(root, "tests/csharp/CampaignCSharpTest/libs")
+csharpLibDirectory = path.join(root, "bindings/csharp/Campaign/libs")
 
 soPath = path.join(binDirectory, "libcampaign.so")
 soPathExists = path.exists(soPath)

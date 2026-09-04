@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="bindings/csharp/Campaign/Campaign.csproj" />
+  <Project Path="tests/csharp/CampaignCSharpTest/CampaignCSharpTest.csproj" />
+</Solution>
