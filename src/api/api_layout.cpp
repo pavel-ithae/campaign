@@ -106,13 +106,13 @@ campaign_api_result_t campaign_layout_push_dynamic_empty(void *layoutPtr, int32_
     CAMPAIGN_API_END
 }
 
-campaign_api_result_t campaign_layout_entry_exists(void *layoutPtr, const char *id, bool *outExists)
+campaign_api_result_t campaign_layout_entry_exists(void *layoutPtr, const char *id, uint8_t *outExists)
 {
     CAMPAIGN_API_VALIDATE_OUTPUT_PTR(outExists);
 
     CAMPAIGN_API_BEGIN
 
-    *outExists = TO_LAYOUT_PTR(layoutPtr)->entryExists(std::string(id));
+    *outExists = (uint8_t)TO_LAYOUT_PTR(layoutPtr)->entryExists(std::string(id));
 
     CAMPAIGN_API_END_WITH_SAFETY(*outExists = false)
 }

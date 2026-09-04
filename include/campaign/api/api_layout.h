@@ -31,7 +31,7 @@ extern "C"
 
     CAMPAIGN_API campaign_api_result_t campaign_layout_push_dynamic_empty(void *layoutPtr, int32_t size);
 
-    CAMPAIGN_API campaign_api_result_t campaign_layout_entry_exists(void *layoutPtr, const char* id, bool *outExists);
+    CAMPAIGN_API campaign_api_result_t campaign_layout_entry_exists(void *layoutPtr, const char* id, uint8_t *outExists);
 
     CAMPAIGN_API campaign_api_result_t campaign_layout_get_entry_count(void *layoutPtr, int32_t *outCount);
 

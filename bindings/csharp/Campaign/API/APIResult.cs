@@ -1,4 +1,4 @@
-namespace Campaign;
+namespace Campaign.API;
 
 public enum APIResult
 {
