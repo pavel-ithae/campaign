@@ -1,14 +1,12 @@
 #pragma once
 
-#include <string.h>
+#include <campaign/api/api_util.h>
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-    char *campaign_string_allocate(size_t length);
-    
-    void campaign_string_free(char *strPtr);
+    CAMPAIGN_API campaign_api_result_t campaign_string_free(char *strPtr);
 #ifdef __cplusplus
 }
 #endif

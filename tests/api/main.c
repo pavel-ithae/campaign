@@ -21,5 +21,7 @@ int main()
 
     test_campaign_layout();
 
+    campaign_layout_push_flag(NULL, "test");
+
     return UNITY_END();
 }

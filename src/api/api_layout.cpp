@@ -1,13 +1,12 @@
 #include <campaign/api/api_layout.h>
 #include <campaign/api/api_string.h>
-#include <campaign/api/api_except.h>
+
+#include "api_except_internal.hpp"
+#include "api_string_internal.hpp"
+
 #include <campaign/layout.hpp>
 #include <cstring>
 #include <iostream>
-
-#if defined(_WIN32)
-#include <objbase.h>
-#endif
 
 using namespace campaign;
 
@@ -40,7 +39,7 @@ void SetDescriptorByte(campaign_descriptor_t &c_descriptor, const Descriptor::By
 
 void SetDescriptorDynamic(campaign_descriptor_t &c_descriptor, const Descriptor::DynamicInfo &dynamicInfo)
 {
-    c_descriptor.type = CAMPAIGN_INFO_TYPE_VOID;
+    c_descriptor.type = CAMPAIGN_INFO_TYPE_DYNAMIC;
     c_descriptor.index = dynamicInfo.index;
     c_descriptor.flagMask = 255;
     c_descriptor.size = dynamicInfo.size;
@@ -48,7 +47,7 @@ void SetDescriptorDynamic(campaign_descriptor_t &c_descriptor, const Descriptor:
 
 campaign_api_result_t campaign_layout_create(int32_t descriptorCount, void **outLayoutPtr)
 {
-    CAMPAIGN_API_VALIDATE_OUTPUT_PTR(outLayoutPtr);
+    CAMPAIGN_API_VALIDATE_PTR(outLayoutPtr);
 
     CAMPAIGN_API_BEGIN
 
@@ -59,56 +58,86 @@ campaign_api_result_t campaign_layout_create(int32_t descriptorCount, void **out
 
 campaign_api_result_t campaign_layout_delete(void *layoutPtr)
 {
+    CAMPAIGN_API_VALIDATE_PTR(layoutPtr);
+
     CAMPAIGN_API_BEGIN
+    
     delete TO_LAYOUT_PTR(layoutPtr);
+
     CAMPAIGN_API_END
 }
 
 campaign_api_result_t campaign_layout_push_flag(void *layoutPtr, const char *id)
 {
+    CAMPAIGN_API_VALIDATE_PTR(layoutPtr);
+
     CAMPAIGN_API_BEGIN
+
     TO_LAYOUT_PTR(layoutPtr)->pushFlag(std::string(id));
+
     CAMPAIGN_API_END
 }
 
 campaign_api_result_t campaign_layout_push_flag_empty(void *layoutPtr)
 {
+    CAMPAIGN_API_VALIDATE_PTR(layoutPtr);
+
     CAMPAIGN_API_BEGIN
+
     TO_LAYOUT_PTR(layoutPtr)->pushFlag();
+
     CAMPAIGN_API_END
 }
 
 campaign_api_result_t campaign_layout_push_byte(void *layoutPtr, const char *id)
 {
+    CAMPAIGN_API_VALIDATE_PTR(layoutPtr);
+    CAMPAIGN_API_VALIDATE_PTR(id);
+
     CAMPAIGN_API_BEGIN
+
     TO_LAYOUT_PTR(layoutPtr)->pushByte(std::string(id));
+
     CAMPAIGN_API_END
 }
 
 campaign_api_result_t campaign_layout_push_byte_empty(void *layoutPtr)
 {
+    CAMPAIGN_API_VALIDATE_PTR(layoutPtr);
+
     CAMPAIGN_API_BEGIN
+
     TO_LAYOUT_PTR(layoutPtr)->pushByte();
+
     CAMPAIGN_API_END
 }
 
 campaign_api_result_t campaign_layout_push_dynamic(void *layoutPtr, const char *id, int32_t size)
 {
+    CAMPAIGN_API_VALIDATE_PTR(layoutPtr);
+
     CAMPAIGN_API_BEGIN
+
     TO_LAYOUT_PTR(layoutPtr)->pushDynamic(std::string(id), size);
+
     CAMPAIGN_API_END
 }
 
 campaign_api_result_t campaign_layout_push_dynamic_empty(void *layoutPtr, int32_t size)
 {
+    CAMPAIGN_API_VALIDATE_PTR(layoutPtr);
+
     CAMPAIGN_API_BEGIN
+
     TO_LAYOUT_PTR(layoutPtr)->pushDynamic(size);
+
     CAMPAIGN_API_END
 }
 
 campaign_api_result_t campaign_layout_entry_exists(void *layoutPtr, const char *id, uint8_t *outExists)
 {
-    CAMPAIGN_API_VALIDATE_OUTPUT_PTR(outExists);
+    CAMPAIGN_API_VALIDATE_PTR(layoutPtr);
+    CAMPAIGN_API_VALIDATE_PTR(outExists);
 
     CAMPAIGN_API_BEGIN
 
@@ -119,7 +148,8 @@ campaign_api_result_t campaign_layout_entry_exists(void *layoutPtr, const char *
 
 campaign_api_result_t campaign_layout_get_entry_count(void *layoutPtr, int32_t *outCount)
 {
-    CAMPAIGN_API_VALIDATE_OUTPUT_PTR(outCount);
+    CAMPAIGN_API_VALIDATE_PTR(layoutPtr);
+    CAMPAIGN_API_VALIDATE_PTR(outCount);
 
     CAMPAIGN_API_BEGIN
 
@@ -130,7 +160,8 @@ campaign_api_result_t campaign_layout_get_entry_count(void *layoutPtr, int32_t *
 
 campaign_api_result_t campaign_layout_get_data_size(void *layoutPtr, int32_t *outSize)
 {
-    CAMPAIGN_API_VALIDATE_OUTPUT_PTR(outSize);
+    CAMPAIGN_API_VALIDATE_PTR(layoutPtr);
+    CAMPAIGN_API_VALIDATE_PTR(outSize);
 
     CAMPAIGN_API_BEGIN
 
@@ -141,7 +172,8 @@ campaign_api_result_t campaign_layout_get_data_size(void *layoutPtr, int32_t *ou
 
 campaign_api_result_t campaign_layout_get_entry_info(void *layoutPtr, int32_t index, campaign_layout_entry_info_t *outEntryInfo)
 {
-    CAMPAIGN_API_VALIDATE_OUTPUT_PTR(outEntryInfo);
+    CAMPAIGN_API_VALIDATE_PTR(layoutPtr);
+    CAMPAIGN_API_VALIDATE_PTR(outEntryInfo);
 
     bool stringAllocated = false; // Tracks if an string was allocated so that it can be freed in case of a failure.
 
@@ -150,28 +182,28 @@ campaign_api_result_t campaign_layout_get_entry_info(void *layoutPtr, int32_t in
     auto entryInfo = TO_LAYOUT_PTR(layoutPtr)->getEntryInfo(index);
     size_t entryInfoIdLength = entryInfo.id.length();
 
-    outEntryInfo->id = campaign_string_allocate(entryInfo.id.length());
+    outEntryInfo->id = AllocateString(entryInfo.id.length());
     stringAllocated = true;
 
     std::memcpy(outEntryInfo->id, entryInfo.id.begin().base(), entryInfoIdLength + 1); // +1 to include null terminator.
 
-    switch(entryInfo.descriptor.getType())
+    switch (entryInfo.descriptor.getType())
     {
-        case Descriptor::Type::Flag:
-            SetDescriptorFlag(outEntryInfo->descriptor, entryInfo.descriptor.getFlagInfo());
-            break;
+    case Descriptor::Type::Flag:
+        SetDescriptorFlag(outEntryInfo->descriptor, entryInfo.descriptor.getFlagInfo());
+        break;
 
-        case Descriptor::Type::Byte:
-            SetDescriptorByte(outEntryInfo->descriptor, entryInfo.descriptor.getByteInfo());
-            break;
+    case Descriptor::Type::Byte:
+        SetDescriptorByte(outEntryInfo->descriptor, entryInfo.descriptor.getByteInfo());
+        break;
 
-        case Descriptor::Type::Dynamic:
-            SetDescriptorDynamic(outEntryInfo->descriptor, entryInfo.descriptor.getDynamicInfo());
-            break;
+    case Descriptor::Type::Dynamic:
+        SetDescriptorDynamic(outEntryInfo->descriptor, entryInfo.descriptor.getDynamicInfo());
+        break;
 
-        default:
-            SetDescriptorVoid(outEntryInfo->descriptor);
-            break;
+    default:
+        SetDescriptorVoid(outEntryInfo->descriptor);
+        break;
     }
 
     CAMPAIGN_API_END_WITH_SAFETY({
@@ -187,29 +219,31 @@ campaign_api_result_t campaign_layout_get_entry_info(void *layoutPtr, int32_t in
 
 campaign_api_result_t campaign_layout_get_descriptor(void *layoutPtr, const char *id, campaign_descriptor_t *outDescriptor)
 {
-    CAMPAIGN_API_VALIDATE_OUTPUT_PTR(outDescriptor);
+    CAMPAIGN_API_VALIDATE_PTR(layoutPtr);
+    CAMPAIGN_API_VALIDATE_PTR(id);
+    CAMPAIGN_API_VALIDATE_PTR(outDescriptor);
 
     CAMPAIGN_API_BEGIN
 
     auto descriptor = TO_LAYOUT_PTR(layoutPtr)->getDescriptor(std::string(id));
 
-    switch(descriptor.getType())
+    switch (descriptor.getType())
     {
-        case Descriptor::Type::Flag:
-            SetDescriptorFlag(*outDescriptor, descriptor.getFlagInfo());
-            break;
+    case Descriptor::Type::Flag:
+        SetDescriptorFlag(*outDescriptor, descriptor.getFlagInfo());
+        break;
 
-        case Descriptor::Type::Byte:
-            SetDescriptorByte(*outDescriptor, descriptor.getByteInfo());
-            break;
+    case Descriptor::Type::Byte:
+        SetDescriptorByte(*outDescriptor, descriptor.getByteInfo());
+        break;
 
-        case Descriptor::Type::Dynamic:
-            SetDescriptorDynamic(*outDescriptor, descriptor.getDynamicInfo());
-            break;
+    case Descriptor::Type::Dynamic:
+        SetDescriptorDynamic(*outDescriptor, descriptor.getDynamicInfo());
+        break;
 
-        default:
-            SetDescriptorVoid(*outDescriptor);
-            break;
+    default:
+        SetDescriptorVoid(*outDescriptor);
+        break;
     }
 
     CAMPAIGN_API_END_WITH_SAFETY({
@@ -219,7 +253,9 @@ campaign_api_result_t campaign_layout_get_descriptor(void *layoutPtr, const char
 
 campaign_api_result_t campaign_layout_get_flag_info(void *layoutPtr, const char *id, campaign_flag_info_t *outFlagInfo)
 {
-    CAMPAIGN_API_VALIDATE_OUTPUT_PTR(outFlagInfo);
+    CAMPAIGN_API_VALIDATE_PTR(layoutPtr);
+    CAMPAIGN_API_VALIDATE_PTR(id);
+    CAMPAIGN_API_VALIDATE_PTR(outFlagInfo);
 
     CAMPAIGN_API_BEGIN
 
@@ -236,7 +272,9 @@ campaign_api_result_t campaign_layout_get_flag_info(void *layoutPtr, const char 
 
 campaign_api_result_t campaign_layout_get_byte_info(void *layoutPtr, const char *id, campaign_byte_info_t *outByteInfo)
 {
-    CAMPAIGN_API_VALIDATE_OUTPUT_PTR(outByteInfo);
+    CAMPAIGN_API_VALIDATE_PTR(layoutPtr);
+    CAMPAIGN_API_VALIDATE_PTR(id);
+    CAMPAIGN_API_VALIDATE_PTR(outByteInfo);
 
     CAMPAIGN_API_BEGIN
 
@@ -249,9 +287,11 @@ campaign_api_result_t campaign_layout_get_byte_info(void *layoutPtr, const char 
     })
 }
 
-campaign_api_result_t campaign_layout_get_dynamic_info(void *layoutPtr, const char *id, int32_t expectedSize, campaign_dynamic_info_t *outDynamicInfo)
+campaign_api_result_t campaign_layout_get_dynamic_info(void *layoutPtr, const char *id, campaign_dynamic_info_t *outDynamicInfo)
 {
-    CAMPAIGN_API_VALIDATE_OUTPUT_PTR(outDynamicInfo);
+    CAMPAIGN_API_VALIDATE_PTR(layoutPtr);
+    CAMPAIGN_API_VALIDATE_PTR(id);
+    CAMPAIGN_API_VALIDATE_PTR(outDynamicInfo);
 
     CAMPAIGN_API_BEGIN
 

@@ -46,7 +46,7 @@ extern "C"
 
     CAMPAIGN_API campaign_api_result_t campaign_layout_get_byte_info(void *layoutPtr, const char* id, campaign_byte_info_t *outByteInfo);
 
-    CAMPAIGN_API campaign_api_result_t campaign_layout_get_dynamic_info(void *layoutPtr, const char* id, int32_t expectedSize, campaign_dynamic_info_t *outDynamicInfo);
+    CAMPAIGN_API campaign_api_result_t campaign_layout_get_dynamic_info(void *layoutPtr, const char* id, campaign_dynamic_info_t *outDynamicInfo);
 #ifdef __cplusplus
 }
 #endif

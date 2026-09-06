@@ -1,6 +1,6 @@
 namespace Campaign.API;
 
-public enum APIResult
+internal enum APIResult
 {
     Success = 0,
     Failure = -1

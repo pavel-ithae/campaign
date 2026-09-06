@@ -24,4 +24,4 @@ if (soPathExists):
 if (dllPathExists):
     shutil.copyfile(dllPath, path.join(csharpLibDirectory, "libcampaign.dll"))
 
-print("Library file copied to CSharp test project.") 
+print("Library file copied to C# bindings.") 

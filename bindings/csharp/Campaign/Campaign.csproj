@@ -8,9 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="libs/libcampaign.so">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="libs/libcampaign.*">
+      <Pack>true</Pack>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+
+    <!-- <EmbeddedResource Include="libs/libcampaign.*" /> -->
+
+    <InternalsVisibleTo Include="CampaignCSharpTest" />
   </ItemGroup>
 
 </Project>

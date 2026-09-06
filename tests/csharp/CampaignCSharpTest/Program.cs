@@ -1,24 +1,34 @@
-﻿using Campaign.API;
+﻿using Campaign;
 
 Console.Write("Hello World!\n");
 
-LayoutAPI.Create(4, out var layoutPtr);
-
-try
+void Call()
 {
-    LayoutAPI.EntryExists(layoutPtr, "hello world!", out bool exists);
-    Console.WriteLine(exists);
+    Layout? layout = new Layout(4);
 
-    LayoutAPI.PushFlag(layoutPtr, "hello world!");
+    try
+    {
+        Console.WriteLine(layout.EntryExist("hello world!"));
 
-    LayoutAPI.EntryExists(layoutPtr, "hello world!", out exists);
-    Console.WriteLine(exists);
+        layout.PushFlag("my_flag!");
+
+        var entryInfo = layout.GetEntryInfo(0);
+
+        Console.WriteLine(entryInfo.id);
+
+        Console.WriteLine(layout.GetFlagInfo("my_flag!"));
+    }
+    catch (Exception e)
+    {
+        Console.Write(e.ToString());
+    }
+
+    layout = null;
 }
-catch (Exception e)
-{
-    Console.Write(e.ToString());
-}
 
-LayoutAPI.Delete(layoutPtr);
+Call();
+
+GC.Collect(2);
+GC.WaitForPendingFinalizers();
 
 Console.Write("Success!\n");

@@ -1,4 +1,8 @@
 #include <campaign/api/api_string.h>
+
+#include "api_string_internal.hpp"
+#include "api_except_internal.hpp"
+
 #include <cstdlib>
 
 #if defined(_WIN32)
@@ -13,12 +17,18 @@
 #define FREE_STRING(strPtr) free(strPtr)
 #endif
 
-char *campaign_string_allocate(size_t length)
+char *AllocateString(size_t length)
 {
     return ALLOCATE_STRING(length);
 }
 
-void campaign_string_free(char *strPtr)
+campaign_api_result_t campaign_string_free(char *strPtr)
 {
-    return FREE_STRING(strPtr);
+    CAMPAIGN_API_VALIDATE_PTR(strPtr);
+
+    CAMPAIGN_API_BEGIN
+
+    FREE_STRING(strPtr);
+
+    CAMPAIGN_API_END
 }
