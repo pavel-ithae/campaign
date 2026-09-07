@@ -1,0 +1,6 @@
+#pragma once
+
+#include <unity.h>
+
+#define TEST_ASSERT_CAMPAIGN_API(call) TEST_ASSERT(call == CAMPAIGN_API_RESULT_SUCCESS)
+#define TEST_ASSERT_CAMPAIGN_API_FAIL(call) TEST_ASSERT(call == CAMPAIGN_API_RESULT_FAIL)

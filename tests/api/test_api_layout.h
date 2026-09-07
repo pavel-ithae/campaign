@@ -1,7 +1,8 @@
 #pragma once
 
+#include "test_api_util.h"
+
 #include <campaign/api/api_layout.h>
-#include <unity.h>
 
 #define TEST_ASSERT_CAMPAIGN_API(call) TEST_ASSERT(call == CAMPAIGN_API_RESULT_SUCCESS)
 #define TEST_ASSERT_CAMPAIGN_API_FAIL(call) TEST_ASSERT(call == CAMPAIGN_API_RESULT_FAIL)
@@ -102,8 +103,111 @@ void test_campaign_layout_flag_push(void)
     TEST_ASSERT_CAMPAIGN_API(campaign_layout_delete(layoutPtr));
 }
 
+void test_campaign_layout_flag_push_empty(void)
+{
+    void *layoutPtr;
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_create(10, &layoutPtr));
+
+    int32_t size;
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_get_data_size(layoutPtr, &size));
+    TEST_ASSERT_EQUAL_INT32(0, size);
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_push_flag_empty(layoutPtr));
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_get_data_size(layoutPtr, &size));
+    TEST_ASSERT_EQUAL_INT32(1, size);
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_push_flag_empty(layoutPtr));
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_push_flag_empty(layoutPtr));
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_push_flag_empty(layoutPtr));
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_get_data_size(layoutPtr, &size));
+    TEST_ASSERT_EQUAL_INT32(1, size);
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_push_flag_empty(layoutPtr));
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_push_flag_empty(layoutPtr));
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_push_flag_empty(layoutPtr));
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_push_flag_empty(layoutPtr));
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_get_data_size(layoutPtr, &size));
+    TEST_ASSERT_EQUAL_INT32(1, size);
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_push_flag_empty(layoutPtr));
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_get_data_size(layoutPtr, &size));
+    TEST_ASSERT_EQUAL_INT32(2, size);
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_push_flag(layoutPtr, "flag"));
+
+    campaign_flag_info_t flagInfo;
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_get_flag_info(layoutPtr, "flag", &flagInfo));
+
+    TEST_ASSERT_EQUAL_INT32(1, flagInfo.index);
+    TEST_ASSERT_EQUAL_UINT8(0x1 << 1, flagInfo.flagMask);
+}
+
+void test_campaign_layout_byte_push(void)
+{
+}
+
+void test_campaign_layout_byte_push_empty(void)
+{
+}
+
+void test_campaign_layout_dynamic_push(void)
+{
+}
+
+void test_campaign_layout_dynamic_push_empty(void)
+{
+}
+
+void test_campaign_layout_mixed_push_empty(void)
+{
+}
+
+void test_campaign_layout_entry_exists(void)
+{
+}
+
+void test_campaign_layout_get_entry_count(void)
+{
+}
+
+void test_campaign_layout_get_data_size(void)
+{
+}
+
+void test_campaign_layout_get_entry_info(void)
+{
+}
+
+void test_campaign_layout_get_flag_info(void)
+{
+}
+
+void test_campaign_layout_get_byte_info(void)
+{
+}
+
+void test_campaign_layout_get_dynamic_info(void)
+{
+}
+
 void test_campaign_layout(void)
 {
     RUN_TEST(test_campaign_layout_create_delete);
     RUN_TEST(test_campaign_layout_flag_push);
+    RUN_TEST(test_campaign_layout_flag_push_empty);
+    RUN_TEST(test_campaign_layout_byte_push);
+    RUN_TEST(test_campaign_layout_byte_push_empty);
+    RUN_TEST(test_campaign_layout_dynamic_push);
+    RUN_TEST(test_campaign_layout_dynamic_push_empty);
+    RUN_TEST(test_campaign_layout_entry_exists);
+    RUN_TEST(test_campaign_layout_get_entry_count);
+    RUN_TEST(test_campaign_layout_get_data_size);
+    RUN_TEST(test_campaign_layout_get_entry_info);
+    RUN_TEST(test_campaign_layout_get_flag_info);
+    RUN_TEST(test_campaign_layout_get_byte_info);
+    RUN_TEST(test_campaign_layout_get_dynamic_info);
 }
