@@ -21,23 +21,19 @@ TEST_CASE("Layout Flag Push", "[layout]")
     REQUIRE(layout.getDataSize() == 1);
 
     auto fDesc = layout.getFlagInfo("flag_first");
-
     REQUIRE(fDesc.getType() == Descriptor::Type::Flag);
     REQUIRE(fDesc.index == 0);
     REQUIRE(fDesc.flagMask == (0x1 << 0));
 
     fDesc = layout.getFlagInfo("flag_second");
-
     REQUIRE(fDesc.index == 0);
     REQUIRE(fDesc.flagMask == (0x1 << 1));
 
     fDesc = layout.getFlagInfo("flag_third");
-
     REQUIRE(fDesc.index == 0);
     REQUIRE(fDesc.flagMask == (0x1 << 2));
 
     fDesc = layout.getFlagInfo("flag_fourth");
-
     REQUIRE(fDesc.index == 0);
     REQUIRE(fDesc.flagMask == (0x1 << 3));
 
@@ -46,7 +42,6 @@ TEST_CASE("Layout Flag Push", "[layout]")
     layout.pushFlag("flag_fifth");
 
     fDesc = layout.getFlagInfo("flag_fifth");
-
     REQUIRE(fDesc.index == 0);
     REQUIRE(fDesc.flagMask == (0x1 << 4));
 
@@ -57,17 +52,14 @@ TEST_CASE("Layout Flag Push", "[layout]")
     REQUIRE(layout.getDataSize() == 1);
 
     fDesc = layout.getFlagInfo("flag_sixth");
-
     REQUIRE(fDesc.index == 0);
     REQUIRE(fDesc.flagMask == (0x1 << 5));
 
     fDesc = layout.getFlagInfo("flag_seventh");
-
     REQUIRE(fDesc.index == 0);
     REQUIRE(fDesc.flagMask == (0x1 << 6));
 
     fDesc = layout.getFlagInfo("flag_eighth");
-
     REQUIRE(fDesc.index == 0);
     REQUIRE(fDesc.flagMask == (0x1 << 7));
 
@@ -76,12 +68,10 @@ TEST_CASE("Layout Flag Push", "[layout]")
     REQUIRE(layout.getDataSize() == 2);
 
     fDesc = layout.getFlagInfo("flag_ninth");
-
     REQUIRE(fDesc.index == 1);
     REQUIRE(fDesc.flagMask == (0x1 << 0));
 
     fDesc = layout.getFlagInfo("flag_first");
-
     REQUIRE(fDesc.index == 0);
     REQUIRE(fDesc.flagMask == (0x1 << 0));
 }
@@ -129,30 +119,30 @@ TEST_CASE("Layout Byte Push", "[layout]")
 
     REQUIRE(layout.getDataSize() == 1);
 
-    auto bDesc = layout.getByteInfo("byte_first");
-    REQUIRE(bDesc.getType() == Descriptor::Type::Byte);
-    REQUIRE(bDesc.index == 0);
+    auto byteInfo = layout.getByteInfo("byte_first");
+    REQUIRE(byteInfo.getType() == Descriptor::Type::Byte);
+    REQUIRE(byteInfo.index == 0);
 
     REQUIRE_THROWS(layout.getByteInfo("byte_second"));
 
     layout.pushByte("byte_second");
     REQUIRE(layout.getDataSize() == 2);
 
-    bDesc = layout.getByteInfo("byte_second");
-    REQUIRE(bDesc.index == 1);
+    byteInfo = layout.getByteInfo("byte_second");
+    REQUIRE(byteInfo.index == 1);
 
-    bDesc = layout.getByteInfo("byte_first");
-    REQUIRE(bDesc.index == 0);
+    byteInfo = layout.getByteInfo("byte_first");
+    REQUIRE(byteInfo.index == 0);
 
     layout.pushByte("byte_third");
     layout.pushByte("byte_fourth");
     REQUIRE(layout.getDataSize() == 4);
 
-    bDesc = layout.getByteInfo("byte_third");
-    REQUIRE(bDesc.index == 2);
+    byteInfo = layout.getByteInfo("byte_third");
+    REQUIRE(byteInfo.index == 2);
 
-    bDesc = layout.getByteInfo("byte_fourth");
-    REQUIRE(bDesc.index == 3);
+    byteInfo = layout.getByteInfo("byte_fourth");
+    REQUIRE(byteInfo.index == 3);
 }
 
 TEST_CASE("Layout Byte Push Empty", "[layout]")
@@ -178,26 +168,26 @@ TEST_CASE("Layout Dynamic Push", "[layout]")
     layout.pushDynamic("dynamic_byte", 1);
     REQUIRE(layout.getDataSize() == 1);
 
-    auto dDesc = layout.getDynamicInfo("dynamic_byte");
-    REQUIRE(dDesc.getType() == Descriptor::Type::Dynamic);
-    REQUIRE(dDesc.index == 0);
-    REQUIRE(dDesc.size == 1);
+    auto dynamicInfo = layout.getDynamicInfo("dynamic_byte");
+    REQUIRE(dynamicInfo.getType() == Descriptor::Type::Dynamic);
+    REQUIRE(dynamicInfo.index == 0);
+    REQUIRE(dynamicInfo.size == 1);
 
     REQUIRE_THROWS(layout.getDynamicInfo("dynamic_int"));
 
     layout.pushDynamic("dynamic_int", 4);
     REQUIRE(layout.getDataSize() == 5);
 
-    dDesc = layout.getDynamicInfo("dynamic_int");
-    REQUIRE(dDesc.index == 1);
-    REQUIRE(dDesc.size == 4);
+    dynamicInfo = layout.getDynamicInfo("dynamic_int");
+    REQUIRE(dynamicInfo.index == 1);
+    REQUIRE(dynamicInfo.size == 4);
 
     layout.pushDynamic("dynamic_char", 1);
     REQUIRE(layout.getDataSize() == 6);
 
-    dDesc = layout.getDynamicInfo("dynamic_char");
-    REQUIRE(dDesc.index == 5);
-    REQUIRE(dDesc.size == 1);
+    dynamicInfo = layout.getDynamicInfo("dynamic_char");
+    REQUIRE(dynamicInfo.index == 5);
+    REQUIRE(dynamicInfo.size == 1);
 }
 
 TEST_CASE("Layout Dynamic Push Empty", "[layout]")
@@ -433,12 +423,10 @@ TEST_CASE("Layout Get Flag Info", "[layout]")
     layout.pushFlag("flag_second");
 
     auto flagInfo = layout.getFlagInfo("flag_first");
-
     REQUIRE(flagInfo.index == 0);
     REQUIRE(flagInfo.flagMask == (0x1 << 0));
 
     flagInfo = layout.getFlagInfo("flag_second");
-
     REQUIRE(flagInfo.index == 0);
     REQUIRE(flagInfo.flagMask == (0x1 << 1));
 
@@ -446,7 +434,6 @@ TEST_CASE("Layout Get Flag Info", "[layout]")
     layout.pushFlag("flag_third");
 
     flagInfo = layout.getFlagInfo("flag_third");
-
     REQUIRE(flagInfo.index == 2);
     REQUIRE(flagInfo.flagMask == (0x1 << 0));
 
@@ -471,11 +458,9 @@ TEST_CASE("Layout Get Byte Info", "[layout]")
     layout.pushByte("byte_second");
 
     auto byteInfo = layout.getByteInfo("byte_first");
-
     REQUIRE(byteInfo.index == 0);
 
     byteInfo = layout.getByteInfo("byte_second");
-
     REQUIRE(byteInfo.index == 1);
 
     layout.pushFlag("flag");
@@ -499,12 +484,10 @@ TEST_CASE("Layout Get Dynamic Info", "[layout]")
     layout.pushDynamic("dynamic_double", 8);
 
     auto dynamicInfo = layout.getDynamicInfo("dynamic_int");
-
     REQUIRE(dynamicInfo.index == 0);
     REQUIRE(dynamicInfo.size == 4);
 
     dynamicInfo = layout.getDynamicInfo("dynamic_double");
-
     REQUIRE(dynamicInfo.index == 4);
     REQUIRE(dynamicInfo.size == 8);
 
