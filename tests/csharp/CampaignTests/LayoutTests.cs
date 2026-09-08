@@ -3,6 +3,18 @@
 public static class LayoutTests
 {
     [Fact]
+    public static void CreateDelete()
+    {
+        var layout = new Layout(4);
+
+        layout.PushFlag();
+
+        ((IDisposable)layout).Dispose();
+
+        Assert.Throws<CampaignException>(() => layout.PushFlag());
+    }
+
+    [Fact]
     public static void FlagPush()
     {
         var layout = new Layout(9);

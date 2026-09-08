@@ -3,7 +3,7 @@ namespace Campaign;
 using System.Collections;
 using Campaign.API;
 
-public class Layout : IEnumerable<LayoutEntry>
+public class Layout : IDisposable, IEnumerable<LayoutEntry>
 {
     private IntPtr _layoutPtr;
 
@@ -15,9 +15,15 @@ public class Layout : IEnumerable<LayoutEntry>
 
     ~Layout()
     {
-        LayoutAPI.Delete(_layoutPtr).ValidateAPICall();
+        Dispose();
     }
 
+
+    void IDisposable.Dispose()
+    {
+        Dispose();
+        GC.SuppressFinalize(this);
+    }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
@@ -125,5 +131,17 @@ public class Layout : IEnumerable<LayoutEntry>
         {
             yield return GetEntryInfo(i);
         }
+    }
+
+    private void Dispose()
+    {
+        if (_layoutPtr == IntPtr.Zero)
+        {
+            return;
+        }
+
+        LayoutAPI.Delete(_layoutPtr).ValidateAPICall();
+
+        _layoutPtr = IntPtr.Zero;
     }
 }
