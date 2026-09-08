@@ -28,7 +28,7 @@ public readonly struct Descriptor
         {
             if (type != InfoType.Flag)
             {
-                throw new Exception($"Tried to get a {nameof(FlagInfo)} from a {nameof(Descriptor)} of type {type}");
+                throw new CampaignException($"Tried to get a {nameof(FlagInfo)} from a {nameof(Descriptor)} of type {type}");
             }
 
             return new FlagInfo(_index, _flagMask);
@@ -41,7 +41,7 @@ public readonly struct Descriptor
         {
             if (type != InfoType.Byte)
             {
-                throw new Exception($"Tried to get a {nameof(ByteInfo)} from a {nameof(Descriptor)} of type {type}");
+                throw new CampaignException($"Tried to get a {nameof(ByteInfo)} from a {nameof(Descriptor)} of type {type}");
             }
 
             return new ByteInfo(_index);
@@ -54,7 +54,7 @@ public readonly struct Descriptor
         {
             if (type != InfoType.Dynamic)
             {
-                throw new Exception($"Tried to get a {nameof(DynamicInfo)} from a {nameof(Descriptor)} of type {type}");
+                throw new CampaignException($"Tried to get a {nameof(DynamicInfo)} from a {nameof(Descriptor)} of type {type}");
             }
 
             return new DynamicInfo(_index, _size);

@@ -83,7 +83,7 @@ TEST_CASE("Layout Flag Push Empty", "[layout]")
     REQUIRE(layout.getDataSize() == 0);
 
     layout.pushFlag();
-
+    
     REQUIRE(layout.getDataSize() == 1);
 
     layout.pushFlag();
@@ -116,7 +116,6 @@ TEST_CASE("Layout Byte Push", "[layout]")
     Layout layout(4);
 
     layout.pushByte("byte_first");
-
     REQUIRE(layout.getDataSize() == 1);
 
     auto byteInfo = layout.getByteInfo("byte_first");
@@ -150,7 +149,6 @@ TEST_CASE("Layout Byte Push Empty", "[layout]")
     Layout layout(4);
 
     layout.pushByte();
-
     REQUIRE(layout.getDataSize() == 1);
 
     layout.pushByte();
@@ -361,6 +359,8 @@ TEST_CASE("Layout Get Entry Info", "[layout]")
             auto flagInfo = entryInfo.descriptor.getFlagInfo();
             REQUIRE(flagInfo.index == 0);
             REQUIRE(flagInfo.flagMask == (0x1 << 0));
+
+            requiredIds.erase("flag_first");
             continue;
         }
 
@@ -371,6 +371,8 @@ TEST_CASE("Layout Get Entry Info", "[layout]")
             auto flagInfo = entryInfo.descriptor.getFlagInfo();
             REQUIRE(flagInfo.index == 0);
             REQUIRE(flagInfo.flagMask == (0x1 << 1));
+
+            requiredIds.erase("flag_second");
             continue;
         }
 
@@ -380,6 +382,8 @@ TEST_CASE("Layout Get Entry Info", "[layout]")
 
             auto byteInfo = entryInfo.descriptor.getByteInfo();
             REQUIRE(byteInfo.index == 1);
+
+            requiredIds.erase("byte_first");
             continue;
         }
 
@@ -390,6 +394,8 @@ TEST_CASE("Layout Get Entry Info", "[layout]")
             auto flagInfo = entryInfo.descriptor.getFlagInfo();
             REQUIRE(flagInfo.index == 2);
             REQUIRE(flagInfo.flagMask == (0x1 << 0));
+
+            requiredIds.erase("flag_third");
             continue;
         }
 
@@ -400,11 +406,15 @@ TEST_CASE("Layout Get Entry Info", "[layout]")
             auto dynamicInfo = entryInfo.descriptor.getDynamicInfo();
             REQUIRE(dynamicInfo.index == 3);
             REQUIRE(dynamicInfo.size == 4);
+
+            requiredIds.erase("dynamic_int");
             continue;
         }
 
         FAIL("Didn't expact an entry of id \"" + entryInfo.id + "\".");
     }
+
+    REQUIRE(requiredIds.size() == 0);
 
     REQUIRE_THROWS(layout.getEntryInfo(5));
 }

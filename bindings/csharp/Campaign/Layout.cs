@@ -1,8 +1,9 @@
 namespace Campaign;
 
+using System.Collections;
 using Campaign.API;
 
-public class Layout
+public class Layout : IEnumerable<LayoutEntry>
 {
     private IntPtr _layoutPtr;
 
@@ -15,6 +16,12 @@ public class Layout
     ~Layout()
     {
         LayoutAPI.Delete(_layoutPtr).ValidateAPICall();
+    }
+
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 
 
@@ -109,5 +116,14 @@ public class Layout
         LayoutAPI.GetDynamicInfo(_layoutPtr, id, out var dynamicInfo).ValidateAPICall();
 
         return dynamicInfo;
+    }
+
+    public IEnumerator<LayoutEntry> GetEnumerator()
+    {
+        var count = GetEntryCount();
+        for (int i = 0; i < count; i++)
+        {
+            yield return GetEntryInfo(i);
+        }
     }
 }

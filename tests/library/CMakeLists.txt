@@ -1,3 +1,5 @@
+enable_testing()
+
 # Try to include local Catch2 (3.0) package.
 find_package(Catch2 3 QUIET)
 

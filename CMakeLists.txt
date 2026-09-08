@@ -42,8 +42,6 @@ target_sources(campaign
 )
 
 if(BUILD_TESTING)
-    enable_testing()
-
     target_compile_definitions(campaign PUBLIC CAMPAIGN_LIBRARY_TESTING=1)
 
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests/library)

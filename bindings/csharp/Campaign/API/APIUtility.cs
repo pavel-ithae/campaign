@@ -8,7 +8,7 @@ internal static class APIUtility
     {
         if (apiCallResult == APIResult.Failure)
         {
-            throw new Exception(ExceptionAPI.GetLastExceptionMessage());
+            throw new CampaignException(ExceptionAPI.GetLastExceptionMessage());
         }
     }
 }
