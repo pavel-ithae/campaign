@@ -3,7 +3,6 @@
 #include <campaign/api/api_util.h>
 #include <campaign/api/api_descriptor.h>
 #include <stdint.h>
-#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -32,6 +31,8 @@ extern "C"
     CAMPAIGN_API campaign_api_result_t campaign_layout_push_dynamic_empty(void *layoutPtr, int32_t size);
 
     CAMPAIGN_API campaign_api_result_t campaign_layout_entry_exists(void *layoutPtr, const char* id, uint8_t *outExists);
+
+    CAMPAIGN_API campaign_api_result_t campaign_layout_entry_exists_of_type(void *layoutPtr, const char*id, campaign_info_type_t type, uint8_t *outExists);
 
     CAMPAIGN_API campaign_api_result_t campaign_layout_get_entry_count(void *layoutPtr, int32_t *outCount);
 

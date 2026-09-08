@@ -53,7 +53,7 @@ campaign_api_result_t campaign_layout_create(int32_t descriptorCount, void **out
 
     *outLayoutPtr = TO_VOID_PTR(new Layout(descriptorCount));
 
-    CAMPAIGN_API_END
+    CAMPAIGN_API_END_WITH_SAFETY(*outLayoutPtr = nullptr)
 }
 
 campaign_api_result_t campaign_layout_delete(void *layoutPtr)
@@ -142,6 +142,18 @@ campaign_api_result_t campaign_layout_entry_exists(void *layoutPtr, const char *
     CAMPAIGN_API_BEGIN
 
     *outExists = (uint8_t)TO_LAYOUT_PTR(layoutPtr)->entryExists(std::string(id));
+
+    CAMPAIGN_API_END_WITH_SAFETY(*outExists = false)
+}
+
+campaign_api_result_t campaign_layout_entry_exists_of_type(void *layoutPtr, const char*id, campaign_info_type_t type, uint8_t *outExists)
+{
+    CAMPAIGN_API_VALIDATE_PTR(layoutPtr);
+    CAMPAIGN_API_VALIDATE_PTR(outExists);
+
+    CAMPAIGN_API_BEGIN
+
+    *outExists = (uint8_t)TO_LAYOUT_PTR(layoutPtr)->entryExists(std::string(id), static_cast<Descriptor::Type>(type));
 
     CAMPAIGN_API_END_WITH_SAFETY(*outExists = false)
 }

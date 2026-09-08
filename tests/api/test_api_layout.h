@@ -299,6 +299,58 @@ void test_campaign_layout_entry_exists(void)
     CLEAR_CAMPAIGN_LAYOUT_TEST();
 }
 
+void test_campaign_layout_entry_exists_of_type(void)
+{
+    INIT_CAMPAIGN_LAYOUT_TEST(3);
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_entry_exists_of_type(layoutPtr, "flag_first", CAMPAIGN_INFO_TYPE_FLAG, &existsBuffer));
+    TEST_ASSERT_FALSE(existsBuffer);
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_push_flag(layoutPtr, "flag_first"));
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_entry_exists_of_type(layoutPtr, "flag_first", CAMPAIGN_INFO_TYPE_FLAG, &existsBuffer));
+    TEST_ASSERT_TRUE(existsBuffer);
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_entry_exists_of_type(layoutPtr, "flag_first", CAMPAIGN_INFO_TYPE_BYTE, &existsBuffer));
+    TEST_ASSERT_FALSE(existsBuffer);
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_entry_exists_of_type(layoutPtr, "flag_first", CAMPAIGN_INFO_TYPE_DYNAMIC, &existsBuffer));
+    TEST_ASSERT_FALSE(existsBuffer);
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_entry_exists_of_type(layoutPtr, "flag_first", CAMPAIGN_INFO_TYPE_VOID, &existsBuffer));
+    TEST_ASSERT_FALSE(existsBuffer);
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_entry_exists_of_type(layoutPtr, "byte_first", CAMPAIGN_INFO_TYPE_BYTE, &existsBuffer));
+    TEST_ASSERT_FALSE(existsBuffer);
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_push_byte(layoutPtr, "byte_first"));
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_entry_exists_of_type(layoutPtr, "byte_first", CAMPAIGN_INFO_TYPE_BYTE, &existsBuffer));
+    TEST_ASSERT_TRUE(existsBuffer);
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_entry_exists_of_type(layoutPtr, "byte_first", CAMPAIGN_INFO_TYPE_FLAG, &existsBuffer));
+    TEST_ASSERT_FALSE(existsBuffer);
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_entry_exists_of_type(layoutPtr, "byte_first", CAMPAIGN_INFO_TYPE_DYNAMIC, &existsBuffer));
+    TEST_ASSERT_FALSE(existsBuffer);
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_entry_exists_of_type(layoutPtr, "byte_first", CAMPAIGN_INFO_TYPE_VOID, &existsBuffer));
+    TEST_ASSERT_FALSE(existsBuffer);
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_entry_exists_of_type(layoutPtr, "dynamic_int", CAMPAIGN_INFO_TYPE_DYNAMIC, &existsBuffer));
+    TEST_ASSERT_FALSE(existsBuffer);
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_push_dynamic(layoutPtr, "dynamic_int", 4));
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_entry_exists_of_type(layoutPtr, "dynamic_int", CAMPAIGN_INFO_TYPE_DYNAMIC, &existsBuffer));
+    TEST_ASSERT_TRUE(existsBuffer);
+
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_entry_exists_of_type(layoutPtr, "dynamic_int", CAMPAIGN_INFO_TYPE_FLAG, &existsBuffer));
+    TEST_ASSERT_FALSE(existsBuffer);
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_entry_exists_of_type(layoutPtr, "dynamic_int", CAMPAIGN_INFO_TYPE_BYTE, &existsBuffer));
+    TEST_ASSERT_FALSE(existsBuffer);
+    TEST_ASSERT_CAMPAIGN_API(campaign_layout_entry_exists_of_type(layoutPtr, "dynamic_int", CAMPAIGN_INFO_TYPE_VOID, &existsBuffer));
+    TEST_ASSERT_FALSE(existsBuffer);
+
+    CLEAR_CAMPAIGN_LAYOUT_TEST();
+}
+
 void test_campaign_layout_get_entry_count(void)
 {
     INIT_CAMPAIGN_LAYOUT_TEST(3);
@@ -576,6 +628,7 @@ void test_campaign_layout(void)
     RUN_TEST(test_campaign_layout_dynamic_push_empty);
     RUN_TEST(test_campaign_layout_mixed_push);
     RUN_TEST(test_campaign_layout_entry_exists);
+    RUN_TEST(test_campaign_layout_entry_exists_of_type);
     RUN_TEST(test_campaign_layout_get_entry_count);
     RUN_TEST(test_campaign_layout_get_data_size);
     RUN_TEST(test_campaign_layout_get_entry_info);

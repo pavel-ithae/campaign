@@ -278,6 +278,33 @@ public static class LayoutTests
     }
 
     [Fact]
+    public static void EntryExistsOfType()
+    {
+        var layout = new Layout(3);
+
+        Assert.False(layout.EntryExist("flag_first", InfoType.Flag));
+        layout.PushFlag("flag_first");
+        Assert.True(layout.EntryExist("flag_first", InfoType.Flag));
+        Assert.False(layout.EntryExist("flag_first", InfoType.Byte));
+        Assert.False(layout.EntryExist("flag_first", InfoType.Dynamic));
+        Assert.False(layout.EntryExist("flag_first", InfoType.Void));
+
+        Assert.False(layout.EntryExist("byte_first", InfoType.Byte));
+        layout.PushByte("byte_first");
+        Assert.True(layout.EntryExist("byte_first", InfoType.Byte));
+        Assert.False(layout.EntryExist("byte_first", InfoType.Flag));
+        Assert.False(layout.EntryExist("byte_first", InfoType.Dynamic));
+        Assert.False(layout.EntryExist("byte_first", InfoType.Void));
+
+        Assert.False(layout.EntryExist("dynamic_int", InfoType.Dynamic));
+        layout.PushDynamic("dynamic_int", 4);
+        Assert.True(layout.EntryExist("dynamic_int", InfoType.Dynamic));
+        Assert.False(layout.EntryExist("dynamic_int", InfoType.Flag));
+        Assert.False(layout.EntryExist("dynamic_int", InfoType.Byte));
+        Assert.False(layout.EntryExist("dynamic_int", InfoType.Void));
+    }
+
+    [Fact]
     public static void GetEntryCount()
     {
         var layout = new Layout(3);

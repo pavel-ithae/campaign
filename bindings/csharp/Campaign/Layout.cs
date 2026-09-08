@@ -68,6 +68,13 @@ public class Layout : IDisposable, IEnumerable<LayoutEntry>
         return exists;
     }
 
+    public bool EntryExist(string id, InfoType infoType)
+    {
+        LayoutAPI.EntryExists(_layoutPtr, id, infoType, out bool exists).ValidateAPICall();
+
+        return exists;
+    }
+
     public int GetEntryCount()
     {
         LayoutAPI.GetEntryCount(_layoutPtr, out var entryCount).ValidateAPICall();

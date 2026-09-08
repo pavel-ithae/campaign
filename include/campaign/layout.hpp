@@ -40,11 +40,12 @@ namespace campaign
         void pushDynamic(size_t size);
 
         bool entryExists(const std::string id) const;
+        bool entryExists(const std::string id, Descriptor::Type type) const;
 
         size_t getEntryCount() const;
         size_t getDataSize() const;
 
-        EntryInfo getEntryInfo(size_t index) const;
+        EntryInfo getEntryInfo(size_t index) const; // TODO: Turn into iteration.
         const Descriptor &getDescriptor(const std::string &id) const;
 
         Descriptor::FlagInfo getFlagInfo(const std::string &id) const;

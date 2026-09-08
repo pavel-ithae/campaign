@@ -278,6 +278,32 @@ TEST_CASE ("Layout Entry Exists", "[layout]")
     REQUIRE(layout.entryExists("dynamic_int"));
 }
 
+TEST_CASE ("Layout Entry Exists Of Type", "[layout]")
+{
+    Layout layout(3);
+
+    REQUIRE_FALSE(layout.entryExists("flag_first", Descriptor::Type::Flag));
+    layout.pushFlag("flag_first");
+    REQUIRE(layout.entryExists("flag_first", Descriptor::Type::Flag));
+    REQUIRE_FALSE(layout.entryExists("flag_first", Descriptor::Type::Byte));
+    REQUIRE_FALSE(layout.entryExists("flag_first", Descriptor::Type::Dynamic));
+    REQUIRE_FALSE(layout.entryExists("flag_first", Descriptor::Type::Void));
+
+    REQUIRE_FALSE(layout.entryExists("byte_first", Descriptor::Type::Byte));
+    layout.pushByte("byte_first");
+    REQUIRE(layout.entryExists("byte_first", Descriptor::Type::Byte));
+    REQUIRE_FALSE(layout.entryExists("byte_first", Descriptor::Type::Flag));
+    REQUIRE_FALSE(layout.entryExists("byte_first", Descriptor::Type::Dynamic));
+    REQUIRE_FALSE(layout.entryExists("byte_first", Descriptor::Type::Void));
+
+    REQUIRE_FALSE(layout.entryExists("dynamic_int", Descriptor::Type::Dynamic));
+    layout.pushDynamic("dynamic_int", 4);
+    REQUIRE(layout.entryExists("dynamic_int", Descriptor::Type::Dynamic));
+    REQUIRE_FALSE(layout.entryExists("dynamic_int", Descriptor::Type::Flag));
+    REQUIRE_FALSE(layout.entryExists("dynamic_int", Descriptor::Type::Byte));
+    REQUIRE_FALSE(layout.entryExists("dynamic_int", Descriptor::Type::Void));
+}
+
 TEST_CASE ("Layout Get Entry Count", "[layout]")
 {
     Layout layout(3);

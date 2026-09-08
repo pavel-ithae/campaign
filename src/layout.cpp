@@ -73,6 +73,16 @@ bool Layout::entryExists(const std::string id) const
     return descriptorMap_.contains(id);
 }
 
+bool Layout::entryExists(const std::string id, Descriptor::Type type) const
+{
+    if (!descriptorMap_.contains(id))
+    {
+        return false;
+    }
+
+    return descriptorMap_.at(id).getType() == type;
+}
+
 size_t Layout::getEntryCount() const
 {
     return descriptorMap_.size();

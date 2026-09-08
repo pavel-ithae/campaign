@@ -67,6 +67,9 @@ internal static partial class LayoutAPI
     [LibraryImport(APIUtility.LIBRARY_NAME, StringMarshalling = StringMarshalling.Utf8, EntryPoint = "campaign_layout_entry_exists")]
     internal static partial APIResult EntryExists(IntPtr layoutPtr, string id, [MarshalAs(UnmanagedType.U1)] out bool exists);
 
+    [LibraryImport(APIUtility.LIBRARY_NAME, StringMarshalling = StringMarshalling.Utf8, EntryPoint = "campaign_layout_entry_exists_of_type")]
+    internal static partial APIResult EntryExists(IntPtr layoutPtr, string id, InfoType infoType, [MarshalAs(UnmanagedType.U1)] out bool exists);
+
     [LibraryImport(APIUtility.LIBRARY_NAME, StringMarshalling = StringMarshalling.Utf8, EntryPoint = "campaign_layout_get_entry_count")]
     internal static partial APIResult GetEntryCount(IntPtr layoutPtr, out int entryCount);
 
