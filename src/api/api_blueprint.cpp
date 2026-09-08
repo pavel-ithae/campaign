@@ -25,13 +25,13 @@ void GetBlueprintPieceInIteration(const BlueprintPiece *iteratorPtr, campaign_bl
     outBlueprintPiece->layoutPtr = static_cast<void *>(new Layout(iteratorPtr->layout));
 }
 
-campaign_api_result_t campaign_blueprint_create(int32_t sizeCount, void **outBlueprintPtr)
+campaign_api_result_t campaign_blueprint_create(int32_t pieceCount, void **outBlueprintPtr)
 {
     CAMPAIGN_API_VALIDATE_PTR(outBlueprintPtr);
 
     CAMPAIGN_API_BEGIN
 
-    *outBlueprintPtr = TO_VOID_PTR(new Blueprint(sizeCount));
+    *outBlueprintPtr = TO_VOID_PTR(new Blueprint(pieceCount));
 
     CAMPAIGN_API_END_WITH_SAFETY(*outBlueprintPtr = nullptr)
 }

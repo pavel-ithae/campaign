@@ -2,13 +2,6 @@ namespace Campaign;
 
 using System.Runtime.InteropServices;
 
-public enum InfoType
-{
-    Void,
-    Flag,
-    Byte,
-    Dynamic
-}
 
 [StructLayout(LayoutKind.Sequential)]
 public readonly struct Descriptor
@@ -84,6 +77,14 @@ public readonly struct Descriptor
     }
 
 
+    public enum InfoType
+    {
+        Void,
+        Flag,
+        Byte,
+        Dynamic
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public readonly struct FlagInfo
     {
@@ -114,7 +115,7 @@ public readonly struct Descriptor
     public readonly struct ByteInfo
     {
         public readonly int index;
-        
+
 
         internal ByteInfo(int index)
         {
@@ -137,7 +138,7 @@ public readonly struct Descriptor
     public readonly struct DynamicInfo
     {
         public readonly int index;
-        
+
         public readonly int size;
 
 

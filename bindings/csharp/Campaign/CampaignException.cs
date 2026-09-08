@@ -1,5 +1,6 @@
 namespace Campaign;
 
+
 public class CampaignException : Exception
 {
     public CampaignException()

@@ -14,7 +14,7 @@ extern "C"
         void *layoutPtr;
     } campaign_blueprint_piece_info_t;
 
-    CAMPAIGN_API campaign_api_result_t campaign_blueprint_create(int32_t sizeCount, void **outBlueprintPtr);
+    CAMPAIGN_API campaign_api_result_t campaign_blueprint_create(int32_t pieceCount, void **outBlueprintPtr);
 
     CAMPAIGN_API campaign_api_result_t campaign_blueprint_delete(void *blueprintPtr);
 
@@ -24,10 +24,10 @@ extern "C"
 
     CAMPAIGN_API campaign_api_result_t campaign_blueprint_get_iterator(void *blueprintPtr, void **outIteratorPtr);
 
-    /// @attention If the call is successful, the caller is responsible for freeing `campaign_blueprint_piece_info_t`. Use `campaign_blueprint_iterator_free_output`.
+    /// @attention If the call is successful, the caller is responsible for freeing `campaign_blueprint_piece_info_t.id` and `campaign_blueprint_piece_info_t.layoutPtr`.
     CAMPAIGN_API campaign_api_result_t campaign_blueprint_iterator_next(void *blueprintPtr, void **refIteratorPtr, campaign_blueprint_piece_info_t *outCurrent);
 
-    CAMPAIGN_API campaign_api_result_t campaign_blueprint_iterator_free_output(campaign_blueprint_piece_info_t *pieceInfoPtr);
+    CAMPAIGN_API campaign_api_result_t campaign_blueprint_iterator_free_output(campaign_blueprint_piece_info_t *pieceInfoPtr); // TODO: Remove.
 #ifdef __cplusplus
 }
 #endif

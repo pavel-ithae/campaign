@@ -1,9 +1,11 @@
 namespace Campaign;
 
 using System.Collections;
+
 using Campaign.API;
 
-public class Layout : IDisposable, IEnumerable<LayoutEntry>
+
+public class Layout : IDisposable, IEnumerable<Layout.EntryInfo>
 {
     private IntPtr _layoutPtr;
 
@@ -13,15 +15,20 @@ public class Layout : IDisposable, IEnumerable<LayoutEntry>
         LayoutAPI.Create(descriptorCount, out _layoutPtr).ValidateAPICall();
     }
 
+    internal Layout(IntPtr layoutPtr)
+    {
+        _layoutPtr = layoutPtr;
+    }
+
     ~Layout()
     {
-        Dispose();
+        DisposeInternal();
     }
 
 
     void IDisposable.Dispose()
     {
-        Dispose();
+        DisposeInternal();
         GC.SuppressFinalize(this);
     }
 
@@ -29,6 +36,9 @@ public class Layout : IDisposable, IEnumerable<LayoutEntry>
     {
         return GetEnumerator();
     }
+
+
+    internal IntPtr ptr => _layoutPtr;
 
 
     public void PushFlag(string id)
@@ -68,7 +78,7 @@ public class Layout : IDisposable, IEnumerable<LayoutEntry>
         return exists;
     }
 
-    public bool EntryExist(string id, InfoType infoType)
+    public bool EntryExist(string id, Descriptor.InfoType infoType)
     {
         LayoutAPI.EntryExists(_layoutPtr, id, infoType, out bool exists).ValidateAPICall();
 
@@ -89,13 +99,13 @@ public class Layout : IDisposable, IEnumerable<LayoutEntry>
         return dataSize;
     }
 
-    public LayoutEntry GetEntryInfo(int index)
+    public EntryInfo GetEntryInfo(int index)
     {
         LayoutAPI.GetEntryInfo(_layoutPtr, index, out var nativeEntry).ValidateAPICall();
 
         try
         {
-            return (LayoutEntry)nativeEntry;
+            return nativeEntry.TransferToManaged();
         }
         finally
         {
@@ -131,7 +141,7 @@ public class Layout : IDisposable, IEnumerable<LayoutEntry>
         return dynamicInfo;
     }
 
-    public IEnumerator<LayoutEntry> GetEnumerator()
+    public IEnumerator<EntryInfo> GetEnumerator()
     {
         var count = GetEntryCount();
         for (int i = 0; i < count; i++)
@@ -140,7 +150,7 @@ public class Layout : IDisposable, IEnumerable<LayoutEntry>
         }
     }
 
-    private void Dispose()
+    private void DisposeInternal()
     {
         if (_layoutPtr == IntPtr.Zero)
         {
@@ -150,5 +160,20 @@ public class Layout : IDisposable, IEnumerable<LayoutEntry>
         LayoutAPI.Delete(_layoutPtr).ValidateAPICall();
 
         _layoutPtr = IntPtr.Zero;
+    }
+
+
+    public readonly struct EntryInfo
+    {
+        public readonly string id;
+
+        public readonly Descriptor descriptor;
+
+
+        public EntryInfo(in string id, in Descriptor descriptor)
+        {
+            this.id = id;
+            this.descriptor = descriptor;
+        }
     }
 }

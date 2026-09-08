@@ -1,5 +1,6 @@
 namespace Campaign.API;
 
+
 internal static class APIUtility
 {
     internal const string LIBRARY_NAME = "libs/libcampaign";

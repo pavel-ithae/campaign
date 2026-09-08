@@ -2,30 +2,34 @@
 
 using System.Runtime.InteropServices;
 
+
 internal static partial class LayoutAPI
 {
     // NOTE: ref struct will have compatibility issues with Unity (Net4.8). Find a solution later.
 
     [StructLayout(LayoutKind.Sequential)]
-    internal ref struct LayoutEntryNative : IDisposable
+    internal ref struct LayoutEntryInfoNative : IDisposable
     {
         public IntPtr idPtr;
 
         public Descriptor descriptor;
 
 
-        public string? id => (idPtr == IntPtr.Zero) ? null : Marshal.PtrToStringUTF8(idPtr);
+        private string id => ((idPtr == IntPtr.Zero) ? null : Marshal.PtrToStringUTF8(idPtr)) ?? string.Empty;
 
 
-        public static explicit operator LayoutEntry(LayoutEntryNative native)
+        public Layout.EntryInfo TransferToManaged()
         {
-            return new LayoutEntry()
+            try
             {
-                id = native.id,
-                descriptor = native.descriptor
-            };
+                return new Layout.EntryInfo(id ?? string.Empty, descriptor);
+            }
+            finally
+            {
+                StringAPI.Free(idPtr); // String was copied.
+                idPtr = IntPtr.Zero;
+            }
         }
-
 
         public void Dispose()
         {
@@ -68,7 +72,7 @@ internal static partial class LayoutAPI
     internal static partial APIResult EntryExists(IntPtr layoutPtr, string id, [MarshalAs(UnmanagedType.U1)] out bool exists);
 
     [LibraryImport(APIUtility.LIBRARY_NAME, StringMarshalling = StringMarshalling.Utf8, EntryPoint = "campaign_layout_entry_exists_of_type")]
-    internal static partial APIResult EntryExists(IntPtr layoutPtr, string id, InfoType infoType, [MarshalAs(UnmanagedType.U1)] out bool exists);
+    internal static partial APIResult EntryExists(IntPtr layoutPtr, string id, Descriptor.InfoType infoType, [MarshalAs(UnmanagedType.U1)] out bool exists);
 
     [LibraryImport(APIUtility.LIBRARY_NAME, StringMarshalling = StringMarshalling.Utf8, EntryPoint = "campaign_layout_get_entry_count")]
     internal static partial APIResult GetEntryCount(IntPtr layoutPtr, out int entryCount);
@@ -77,7 +81,7 @@ internal static partial class LayoutAPI
     internal static partial APIResult GetDataSize(IntPtr layoutPtr, out int dataSize);
 
     [LibraryImport(APIUtility.LIBRARY_NAME, StringMarshalling = StringMarshalling.Utf8, EntryPoint = "campaign_layout_get_entry_info")]
-    internal static partial APIResult GetEntryInfo(IntPtr layoutPtr, int index, out LayoutEntryNative entry);
+    internal static partial APIResult GetEntryInfo(IntPtr layoutPtr, int index, out LayoutEntryInfoNative entryInfo);
 
     [LibraryImport(APIUtility.LIBRARY_NAME, StringMarshalling = StringMarshalling.Utf8, EntryPoint = "campaign_layout_get_descriptor")]
     internal static partial APIResult GetDescriptor(IntPtr layoutPtr, string id, out Descriptor descriptor);

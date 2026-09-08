@@ -282,26 +282,26 @@ public static class LayoutTests
     {
         var layout = new Layout(3);
 
-        Assert.False(layout.EntryExist("flag_first", InfoType.Flag));
+        Assert.False(layout.EntryExist("flag_first", Descriptor.InfoType.Flag));
         layout.PushFlag("flag_first");
-        Assert.True(layout.EntryExist("flag_first", InfoType.Flag));
-        Assert.False(layout.EntryExist("flag_first", InfoType.Byte));
-        Assert.False(layout.EntryExist("flag_first", InfoType.Dynamic));
-        Assert.False(layout.EntryExist("flag_first", InfoType.Void));
+        Assert.True(layout.EntryExist("flag_first", Descriptor.InfoType.Flag));
+        Assert.False(layout.EntryExist("flag_first", Descriptor.InfoType.Byte));
+        Assert.False(layout.EntryExist("flag_first", Descriptor.InfoType.Dynamic));
+        Assert.False(layout.EntryExist("flag_first", Descriptor.InfoType.Void));
 
-        Assert.False(layout.EntryExist("byte_first", InfoType.Byte));
+        Assert.False(layout.EntryExist("byte_first", Descriptor.InfoType.Byte));
         layout.PushByte("byte_first");
-        Assert.True(layout.EntryExist("byte_first", InfoType.Byte));
-        Assert.False(layout.EntryExist("byte_first", InfoType.Flag));
-        Assert.False(layout.EntryExist("byte_first", InfoType.Dynamic));
-        Assert.False(layout.EntryExist("byte_first", InfoType.Void));
+        Assert.True(layout.EntryExist("byte_first", Descriptor.InfoType.Byte));
+        Assert.False(layout.EntryExist("byte_first", Descriptor.InfoType.Flag));
+        Assert.False(layout.EntryExist("byte_first", Descriptor.InfoType.Dynamic));
+        Assert.False(layout.EntryExist("byte_first", Descriptor.InfoType.Void));
 
-        Assert.False(layout.EntryExist("dynamic_int", InfoType.Dynamic));
+        Assert.False(layout.EntryExist("dynamic_int", Descriptor.InfoType.Dynamic));
         layout.PushDynamic("dynamic_int", 4);
-        Assert.True(layout.EntryExist("dynamic_int", InfoType.Dynamic));
-        Assert.False(layout.EntryExist("dynamic_int", InfoType.Flag));
-        Assert.False(layout.EntryExist("dynamic_int", InfoType.Byte));
-        Assert.False(layout.EntryExist("dynamic_int", InfoType.Void));
+        Assert.True(layout.EntryExist("dynamic_int", Descriptor.InfoType.Dynamic));
+        Assert.False(layout.EntryExist("dynamic_int", Descriptor.InfoType.Flag));
+        Assert.False(layout.EntryExist("dynamic_int", Descriptor.InfoType.Byte));
+        Assert.False(layout.EntryExist("dynamic_int", Descriptor.InfoType.Void));
     }
 
     [Fact]
@@ -383,7 +383,7 @@ public static class LayoutTests
             {
                 case "flag_first":
                     {
-                        Assert.Equal(InfoType.Flag, entryInfo.descriptor.type);
+                        Assert.Equal(Descriptor.InfoType.Flag, entryInfo.descriptor.type);
 
                         var flagInfo = entryInfo.descriptor.flagInfo;
                         Assert.Equal(0, flagInfo.index);
@@ -395,7 +395,7 @@ public static class LayoutTests
 
                 case "flag_second":
                     {
-                        Assert.Equal(InfoType.Flag, entryInfo.descriptor.type);
+                        Assert.Equal(Descriptor.InfoType.Flag, entryInfo.descriptor.type);
 
                         var flagInfo = entryInfo.descriptor.flagInfo;
                         Assert.Equal(0, flagInfo.index);
@@ -407,7 +407,7 @@ public static class LayoutTests
 
                 case "byte_first":
                     {
-                        Assert.Equal(InfoType.Byte, entryInfo.descriptor.type);
+                        Assert.Equal(Descriptor.InfoType.Byte, entryInfo.descriptor.type);
 
                         var byteInfo = entryInfo.descriptor.byteInfo;
                         Assert.Equal(1, byteInfo.index);
@@ -418,7 +418,7 @@ public static class LayoutTests
 
                 case "flag_third":
                     {
-                        Assert.Equal(InfoType.Flag, entryInfo.descriptor.type);
+                        Assert.Equal(Descriptor.InfoType.Flag, entryInfo.descriptor.type);
 
                         var flagInfo = entryInfo.descriptor.flagInfo;
                         Assert.Equal(2, flagInfo.index);
@@ -430,7 +430,7 @@ public static class LayoutTests
 
                 case "dynamic_int":
                     {
-                        Assert.Equal(InfoType.Dynamic, entryInfo.descriptor.type);
+                        Assert.Equal(Descriptor.InfoType.Dynamic, entryInfo.descriptor.type);
 
                         var dynamicInfo = entryInfo.descriptor.dynamicInfo;
                         Assert.Equal(3, dynamicInfo.index);
@@ -564,7 +564,7 @@ public static class LayoutTests
             {
                 case "flag_first":
                     {
-                        Assert.Equal(InfoType.Flag, entryInfo.descriptor.type);
+                        Assert.Equal(Descriptor.InfoType.Flag, entryInfo.descriptor.type);
 
                         var flagInfo = entryInfo.descriptor.flagInfo;
                         Assert.Equal(0, flagInfo.index);
@@ -576,7 +576,7 @@ public static class LayoutTests
 
                 case "flag_second":
                     {
-                        Assert.Equal(InfoType.Flag, entryInfo.descriptor.type);
+                        Assert.Equal(Descriptor.InfoType.Flag, entryInfo.descriptor.type);
 
                         var flagInfo = entryInfo.descriptor.flagInfo;
                         Assert.Equal(0, flagInfo.index);
@@ -588,7 +588,7 @@ public static class LayoutTests
 
                 case "byte_first":
                     {
-                        Assert.Equal(InfoType.Byte, entryInfo.descriptor.type);
+                        Assert.Equal(Descriptor.InfoType.Byte, entryInfo.descriptor.type);
 
                         var byteInfo = entryInfo.descriptor.byteInfo;
                         Assert.Equal(1, byteInfo.index);
@@ -599,7 +599,7 @@ public static class LayoutTests
 
                 case "flag_third":
                     {
-                        Assert.Equal(InfoType.Flag, entryInfo.descriptor.type);
+                        Assert.Equal(Descriptor.InfoType.Flag, entryInfo.descriptor.type);
 
                         var flagInfo = entryInfo.descriptor.flagInfo;
                         Assert.Equal(2, flagInfo.index);
@@ -611,7 +611,7 @@ public static class LayoutTests
 
                 case "dynamic_int":
                     {
-                        Assert.Equal(InfoType.Dynamic, entryInfo.descriptor.type);
+                        Assert.Equal(Descriptor.InfoType.Dynamic, entryInfo.descriptor.type);
 
                         var dynamicInfo = entryInfo.descriptor.dynamicInfo;
                         Assert.Equal(3, dynamicInfo.index);
