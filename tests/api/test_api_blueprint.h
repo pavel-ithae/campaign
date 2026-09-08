@@ -88,7 +88,8 @@ void test_campaign_blueprint(void)
             matchCount++;
         }
 
-        TEST_ASSERT_CAMPAIGN_API(campaign_blueprint_iterator_free_output(&pieceInfo));
+        TEST_ASSERT_CAMPAIGN_API(campaign_string_free(pieceInfo.id));
+        TEST_ASSERT_CAMPAIGN_API(campaign_layout_delete(pieceInfo.layoutPtr));
     }
 
     TEST_ASSERT_CAMPAIGN_API_FAIL(campaign_blueprint_iterator_next(blueprintPtr, &blueprintIteratorPtr, &pieceInfo));

@@ -111,22 +111,11 @@ campaign_api_result_t campaign_blueprint_iterator_next(void *blueprintPtr, void 
     CAMPAIGN_API_END_WITH_SAFETY({
         if (blueprintPieceInfoAllocated)
         {
-            campaign_blueprint_iterator_free_output(outCurrent);
+            campaign_string_free(outCurrent->id);
+            campaign_layout_delete(outCurrent->layoutPtr);
         }
 
         outCurrent->id = nullptr;
         outCurrent->layoutPtr = nullptr;
     })
-}
-
-campaign_api_result_t campaign_blueprint_iterator_free_output(campaign_blueprint_piece_info_t *pieceInfoPtr)
-{
-    CAMPAIGN_API_VALIDATE_PTR(pieceInfoPtr);
-
-    CAMPAIGN_API_BEGIN
-
-    campaign_string_free(pieceInfoPtr->id);
-    campaign_layout_delete(pieceInfoPtr->layoutPtr);
-
-    CAMPAIGN_API_END
 }

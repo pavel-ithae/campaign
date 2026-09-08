@@ -26,8 +26,6 @@ extern "C"
 
     /// @attention If the call is successful, the caller is responsible for freeing `campaign_blueprint_piece_info_t.id` and `campaign_blueprint_piece_info_t.layoutPtr`.
     CAMPAIGN_API campaign_api_result_t campaign_blueprint_iterator_next(void *blueprintPtr, void **refIteratorPtr, campaign_blueprint_piece_info_t *outCurrent);
-
-    CAMPAIGN_API campaign_api_result_t campaign_blueprint_iterator_free_output(campaign_blueprint_piece_info_t *pieceInfoPtr); // TODO: Remove.
 #ifdef __cplusplus
 }
 #endif
