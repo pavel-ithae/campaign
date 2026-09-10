@@ -1,10 +1,12 @@
-namespace Campaign.API;
-
 using System.Runtime.InteropServices;
 
 
-internal static partial class ExceptionAPI
+namespace Campaign.API
 {
-    [LibraryImport(APIUtility.LIBRARY_NAME, StringMarshalling = StringMarshalling.Utf8, EntryPoint = "campaign_exception_get_last_message")]
-    internal static partial string GetLastExceptionMessage();
+    internal static partial class ExceptionAPI
+    {
+        [DllImport(APIUtility.LIBRARY_NAME, EntryPoint = "campaign_exception_get_last_message")]
+        [return: MarshalAs(UnmanagedType.LPUTF8Str)]
+        internal static extern string GetLastExceptionMessage();
+    }
 }

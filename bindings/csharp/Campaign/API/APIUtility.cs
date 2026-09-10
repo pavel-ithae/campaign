@@ -1,15 +1,36 @@
-namespace Campaign.API;
+using System;
 
 
-internal static class APIUtility
+namespace Campaign.API
 {
-    internal const string LIBRARY_NAME = "libs/libcampaign";
-
-    internal static void ValidateAPICall(this APIResult apiCallResult)
+    internal static class APIUtility
     {
-        if (apiCallResult == APIResult.Failure)
+        internal const string LIBRARY_NAME = "libs/libcampaign";
+
+        internal static void ValidateAPICall(this APIResult apiCallResult)
         {
-            throw new CampaignException(ExceptionAPI.GetLastExceptionMessage());
+            if (apiCallResult == APIResult.Failure)
+            {
+                throw new CampaignException(ExceptionAPI.GetLastExceptionMessage());
+            }
+        }
+
+        unsafe internal static string PtrToStringUTF8(IntPtr stringPtr)
+        {
+            if (stringPtr == IntPtr.Zero)
+            {
+                return null;
+            }
+
+            byte* charUTF8Ptr = (byte*)stringPtr.ToPointer();
+            int length = 0;
+
+            while (charUTF8Ptr[length] != 0)
+            {
+                length++;
+            }
+
+            return System.Text.Encoding.UTF8.GetString(charUTF8Ptr, length);
         }
     }
 }

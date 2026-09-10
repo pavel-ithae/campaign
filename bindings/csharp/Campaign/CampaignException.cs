@@ -1,20 +1,22 @@
-namespace Campaign;
+using System;
 
-
-public class CampaignException : Exception
+namespace Campaign
 {
-    public CampaignException()
-        : base()
+    public class CampaignException : Exception
     {
-    }
+        public CampaignException()
+            : base()
+        {
+        }
 
-    public CampaignException(string? message)
-        : base(message)
-    {
-    }
+        public CampaignException(string message)
+            : base(message)
+        {
+        }
 
-    public CampaignException(string? message, Exception? innerException)
-        : base(message, innerException)
-    {
+        public CampaignException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
     }
 }
