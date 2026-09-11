@@ -1,51 +1,50 @@
 namespace Campaign.API;
 
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.Marshalling;
 
 
 internal static partial class BlueprintAPI
 {
-    [StructLayout(LayoutKind.Sequential)]
-    internal ref struct BlueprintPieceInfoNative : IDisposable
+    [CustomMarshaller(typeof(Blueprint.PieceInfo), MarshalMode.ManagedToUnmanagedOut, typeof(BlueprintPieceInfoMarshaller))]
+    internal static class BlueprintPieceInfoMarshaller
     {
-        public IntPtr idPtr;
-
-        public IntPtr layoutPtr;
-
-
-        private string id => ((idPtr == IntPtr.Zero) ? null : Marshal.PtrToStringUTF8(idPtr)) ?? string.Empty;
-
-        private Layout? layout => (layoutPtr == IntPtr.Zero) ? null : new Layout(layoutPtr);
-
-
-        public Blueprint.PieceInfo TransferToManaged()
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct BlueprintPieceInfoNative
         {
-            try
-            {
-                return new Blueprint.PieceInfo(id ?? string.Empty, layout);
-            }
-            finally
-            {
-                StringAPI.Free(idPtr); // String was copied.
-                idPtr = IntPtr.Zero;
+            public IntPtr idPtr;
 
-                layoutPtr = IntPtr.Zero; // Layout was transfered.
+            public IntPtr layoutPtr;
+
+
+            public Blueprint.PieceInfo CopyToManaged()
+            {
+                return new Blueprint.PieceInfo(
+                    ((idPtr == IntPtr.Zero) ? null : Marshal.PtrToStringUTF8(idPtr)) ?? string.Empty,
+                    (layoutPtr == IntPtr.Zero) ? null : new Layout(layoutPtr)
+                    );
+            }
+
+            public void Free()
+            {
+                if (idPtr == IntPtr.Zero)
+                {
+                    return;
+                }
+
+                StringAPI.Free(idPtr);
             }
         }
 
-        public void Dispose()
-        {
-            if (idPtr != IntPtr.Zero)
-            {
-                StringAPI.Free(idPtr);
-                idPtr = IntPtr.Zero;
-            }
 
-            if (layoutPtr != IntPtr.Zero)
-            {
-                LayoutAPI.Delete(layoutPtr);
-                layoutPtr = IntPtr.Zero;
-            }
+        public static Blueprint.PieceInfo ConvertToManaged(BlueprintPieceInfoNative unmanaged)
+        {
+            return unmanaged.CopyToManaged();
+        }
+
+        public static void Free(BlueprintPieceInfoNative unmanaged)
+        {
+            unmanaged.Free();
         }
     }
 
@@ -66,5 +65,5 @@ internal static partial class BlueprintAPI
     internal static partial APIResult GetIterator(IntPtr blueprintPtr, out IntPtr iteratorPtr);
 
     [LibraryImport(APIUtility.LIBRARY_NAME, StringMarshalling = StringMarshalling.Utf8, EntryPoint = "campaign_blueprint_iterator_next")]
-    internal static partial APIResult IteratorNext(IntPtr blueprintPtr, ref IntPtr iteratorPtr, out BlueprintPieceInfoNative current);
+    internal static partial APIResult IteratorNext(IntPtr blueprintPtr, ref IntPtr iteratorPtr, out Blueprint.PieceInfo current);
 }

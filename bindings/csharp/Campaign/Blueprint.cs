@@ -1,7 +1,7 @@
 namespace Campaign;
 
 using System.Collections;
-
+using System.Runtime.InteropServices.Marshalling;
 using Campaign.API;
 
 
@@ -56,9 +56,9 @@ public class Blueprint : IDisposable, IEnumerable<Blueprint.PieceInfo>
         int size = count;
         for (int i = 0; i < size; i++)
         {
-            BlueprintAPI.IteratorNext(_blueprintPtr, ref iteratorPtr, out BlueprintAPI.BlueprintPieceInfoNative pieceInfoNative).ValidateAPICall();
+            BlueprintAPI.IteratorNext(_blueprintPtr, ref iteratorPtr, out var pieceInfo).ValidateAPICall();
 
-            yield return pieceInfoNative.TransferToManaged();
+            yield return pieceInfo;
         }
     }
 
@@ -75,6 +75,7 @@ public class Blueprint : IDisposable, IEnumerable<Blueprint.PieceInfo>
     }
 
     
+    [NativeMarshalling(typeof(BlueprintAPI.BlueprintPieceInfoMarshaller))]
     public readonly struct PieceInfo
     {
         public readonly string id;

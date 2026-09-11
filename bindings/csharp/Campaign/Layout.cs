@@ -1,6 +1,7 @@
 namespace Campaign;
 
 using System.Collections;
+using System.Runtime.InteropServices.Marshalling;
 
 using Campaign.API;
 
@@ -101,16 +102,9 @@ public class Layout : IDisposable, IEnumerable<Layout.EntryInfo>
 
     public EntryInfo GetEntryInfo(int index)
     {
-        LayoutAPI.GetEntryInfo(_layoutPtr, index, out var nativeEntry).ValidateAPICall();
+        LayoutAPI.GetEntryInfo(_layoutPtr, index, out var entryInfo).ValidateAPICall();
 
-        try
-        {
-            return nativeEntry.TransferToManaged();
-        }
-        finally
-        {
-            nativeEntry.Dispose();
-        }
+        return entryInfo;
     }
 
     public Descriptor GetDescriptor(string id)
@@ -163,6 +157,7 @@ public class Layout : IDisposable, IEnumerable<Layout.EntryInfo>
     }
 
 
+    [NativeMarshalling(typeof(LayoutAPI.LayoutEntryInfoMarshaller))]
     public readonly struct EntryInfo
     {
         public readonly string id;

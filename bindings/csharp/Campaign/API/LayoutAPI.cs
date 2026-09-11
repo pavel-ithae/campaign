@@ -1,48 +1,53 @@
 ﻿namespace Campaign.API;
 
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.Marshalling;
 
 
 internal static partial class LayoutAPI
 {
-    // NOTE: ref struct will have compatibility issues with Unity (Net4.8). Find a solution later.
-
-    [StructLayout(LayoutKind.Sequential)]
-    internal ref struct LayoutEntryInfoNative : IDisposable
+    [CustomMarshaller(typeof(Layout.EntryInfo), MarshalMode.Default, typeof(LayoutEntryInfoMarshaller))]
+    internal static class LayoutEntryInfoMarshaller
     {
-        public IntPtr idPtr;
-
-        public Descriptor descriptor;
-
-
-        private string id => ((idPtr == IntPtr.Zero) ? null : Marshal.PtrToStringUTF8(idPtr)) ?? string.Empty;
-
-
-        public Layout.EntryInfo TransferToManaged()
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct LayoutEntryInfoNative
         {
-            try
+            public IntPtr idPtr;
+
+            public Descriptor descriptor;
+
+
+            public Layout.EntryInfo CopyToManaged()
             {
-                return new Layout.EntryInfo(id ?? string.Empty, descriptor);
+                return new Layout.EntryInfo(
+                    ((idPtr == IntPtr.Zero) ? null : Marshal.PtrToStringUTF8(idPtr)) ?? string.Empty,
+                    descriptor
+                    );
             }
-            finally
+
+            public void Free()
             {
-                StringAPI.Free(idPtr); // String was copied.
-                idPtr = IntPtr.Zero;
+                if (idPtr == IntPtr.Zero)
+                {
+                    return;
+                }
+
+                StringAPI.Free(idPtr);
             }
         }
 
-        public void Dispose()
+
+        public static Layout.EntryInfo ConvertToManaged(LayoutEntryInfoNative unmanaged)
         {
-            if (idPtr == IntPtr.Zero)
-            {
-                return;
-            }
+            return unmanaged.CopyToManaged();
+        }
 
-            StringAPI.Free(idPtr);
-
-            idPtr = IntPtr.Zero;
+        public static void Free(LayoutEntryInfoNative unmanaged)
+        {
+            unmanaged.Free();
         }
     }
+
 
     [LibraryImport(APIUtility.LIBRARY_NAME, StringMarshalling = StringMarshalling.Utf8, EntryPoint = "campaign_layout_create")]
     internal static partial APIResult Create(int descriptorCount, out IntPtr layoutPtr);
@@ -81,7 +86,7 @@ internal static partial class LayoutAPI
     internal static partial APIResult GetDataSize(IntPtr layoutPtr, out int dataSize);
 
     [LibraryImport(APIUtility.LIBRARY_NAME, StringMarshalling = StringMarshalling.Utf8, EntryPoint = "campaign_layout_get_entry_info")]
-    internal static partial APIResult GetEntryInfo(IntPtr layoutPtr, int index, out LayoutEntryInfoNative entryInfo);
+    internal static partial APIResult GetEntryInfo(IntPtr layoutPtr, int index, out Layout.EntryInfo entryInfo);
 
     [LibraryImport(APIUtility.LIBRARY_NAME, StringMarshalling = StringMarshalling.Utf8, EntryPoint = "campaign_layout_get_descriptor")]
     internal static partial APIResult GetDescriptor(IntPtr layoutPtr, string id, out Descriptor descriptor);
