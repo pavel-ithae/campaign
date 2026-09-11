@@ -1,20 +1,31 @@
-namespace Campaign;
+using System;
 
 
-public class CampaignException : Exception
+namespace Campaign
 {
-    public CampaignException()
-        : base()
+    public class CampaignException : Exception
     {
-    }
+        public CampaignException()
+            : base()
+        {
+        }
 
-    public CampaignException(string? message)
-        : base(message)
-    {
-    }
+#if !NET48
+        public CampaignException(string? message)
+#else
+        public CampaignException(string message)
+#endif
+            : base(message)
+        {
+        }
 
-    public CampaignException(string? message, Exception? innerException)
-        : base(message, innerException)
-    {
+#if !NET48
+        public CampaignException(string? message, Exception? innerException)
+#else
+        public CampaignException(string message, Exception innerException)
+#endif
+            : base(message, innerException)
+        {
+        }
     }
 }

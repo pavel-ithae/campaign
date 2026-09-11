@@ -1,162 +1,175 @@
-namespace Campaign;
-
 using System.Runtime.InteropServices;
 
 
-[StructLayout(LayoutKind.Sequential)]
-public readonly struct Descriptor
+namespace Campaign
 {
-    public readonly InfoType type;
-
-    private readonly int _index;
-
-    private readonly byte _flagMask;
-
-    private readonly int _size;
-
-
-    public readonly FlagInfo flagInfo
-    {
-        get
-        {
-            if (type != InfoType.Flag)
-            {
-                throw new CampaignException($"Tried to get a {nameof(FlagInfo)} from a {nameof(Descriptor)} of type {type}");
-            }
-
-            return new FlagInfo(_index, _flagMask);
-        }
-    }
-
-    public readonly ByteInfo byteInfo
-    {
-        get
-        {
-            if (type != InfoType.Byte)
-            {
-                throw new CampaignException($"Tried to get a {nameof(ByteInfo)} from a {nameof(Descriptor)} of type {type}");
-            }
-
-            return new ByteInfo(_index);
-        }
-    }
-
-    public readonly DynamicInfo dynamicInfo
-    {
-        get
-        {
-            if (type != InfoType.Dynamic)
-            {
-                throw new CampaignException($"Tried to get a {nameof(DynamicInfo)} from a {nameof(Descriptor)} of type {type}");
-            }
-
-            return new DynamicInfo(_index, _size);
-        }
-    }
-
-
-    public override string ToString()
-    {
-        switch (type)
-        {
-            case InfoType.Void:
-                return "Void{}";
-
-            case InfoType.Flag:
-                return FlagInfo.BuildString(_index, _flagMask);
-
-            case InfoType.Byte:
-                return ByteInfo.BuildString(_index);
-
-            case InfoType.Dynamic:
-                return DynamicInfo.BuildString(_index, _size);
-
-            default:
-                return "Unknown{}";
-        }
-    }
-
-
-    public enum InfoType
-    {
-        Void,
-        Flag,
-        Byte,
-        Dynamic
-    }
-
     [StructLayout(LayoutKind.Sequential)]
-    public readonly struct FlagInfo
+    public readonly struct Descriptor
     {
-        public readonly int index;
+        public readonly InfoType type;
 
-        public readonly byte flagMask;
+        private readonly int _index;
+
+        private readonly byte _flagMask;
+
+        private readonly int _size;
 
 
-        internal FlagInfo(int index, byte flagMask)
+#if !NET48
+        public readonly FlagInfo flagInfo
+#else
+        public FlagInfo flagInfo
+#endif
         {
-            this.index = index;
-            this.flagMask = flagMask;
+            get
+            {
+                if (type != InfoType.Flag)
+                {
+                    throw new CampaignException($"Tried to get a {nameof(FlagInfo)} from a {nameof(Descriptor)} of type {type}");
+                }
+
+                return new FlagInfo(_index, _flagMask);
+            }
+        }
+
+#if !NET48
+        public readonly ByteInfo byteInfo
+#else
+        public ByteInfo byteInfo
+#endif
+        {
+            get
+            {
+                if (type != InfoType.Byte)
+                {
+                    throw new CampaignException($"Tried to get a {nameof(ByteInfo)} from a {nameof(Descriptor)} of type {type}");
+                }
+
+                return new ByteInfo(_index);
+            }
+        }
+
+#if !NET48
+        public readonly DynamicInfo dynamicInfo
+#else
+        public DynamicInfo dynamicInfo
+#endif
+        {
+            get
+            {
+                if (type != InfoType.Dynamic)
+                {
+                    throw new CampaignException($"Tried to get a {nameof(DynamicInfo)} from a {nameof(Descriptor)} of type {type}");
+                }
+
+                return new DynamicInfo(_index, _size);
+            }
         }
 
 
         public override string ToString()
         {
-            return BuildString(index, flagMask);
-        }
+            switch (type)
+            {
+                case InfoType.Void:
+                    return "Void{}";
 
-        internal static string BuildString(int index, byte flagMask)
-        {
-            return $"Flag{{{index},{flagMask}}}";
-        }
-    }
+                case InfoType.Flag:
+                    return FlagInfo.BuildString(_index, _flagMask);
 
-    [StructLayout(LayoutKind.Sequential)]
-    public readonly struct ByteInfo
-    {
-        public readonly int index;
+                case InfoType.Byte:
+                    return ByteInfo.BuildString(_index);
 
+                case InfoType.Dynamic:
+                    return DynamicInfo.BuildString(_index, _size);
 
-        internal ByteInfo(int index)
-        {
-            this.index = index;
-        }
-
-
-        public override string ToString()
-        {
-            return BuildString(index);
-        }
-
-        internal static string BuildString(int index)
-        {
-            return $"Byte{{{index}}}";
-        }
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public readonly struct DynamicInfo
-    {
-        public readonly int index;
-
-        public readonly int size;
-
-
-        internal DynamicInfo(int index, int size)
-        {
-            this.index = index;
-            this.size = size;
+                default:
+                    return "Unknown{}";
+            }
         }
 
 
-        public override string ToString()
+        public enum InfoType
         {
-            return BuildString(index, size);
+            Void,
+            Flag,
+            Byte,
+            Dynamic
         }
 
-        internal static string BuildString(int index, int size)
+        [StructLayout(LayoutKind.Sequential)]
+        public readonly struct FlagInfo
         {
-            return $"Dynamic{{{index},{size}}}";
+            public readonly int index;
+
+            public readonly byte flagMask;
+
+
+            internal FlagInfo(int index, byte flagMask)
+            {
+                this.index = index;
+                this.flagMask = flagMask;
+            }
+
+
+            public override string ToString()
+            {
+                return BuildString(index, flagMask);
+            }
+
+            internal static string BuildString(int index, byte flagMask)
+            {
+                return $"Flag{{{index},{flagMask}}}";
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public readonly struct ByteInfo
+        {
+            public readonly int index;
+
+
+            internal ByteInfo(int index)
+            {
+                this.index = index;
+            }
+
+
+            public override string ToString()
+            {
+                return BuildString(index);
+            }
+
+            internal static string BuildString(int index)
+            {
+                return $"Byte{{{index}}}";
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public readonly struct DynamicInfo
+        {
+            public readonly int index;
+
+            public readonly int size;
+
+
+            internal DynamicInfo(int index, int size)
+            {
+                this.index = index;
+                this.size = size;
+            }
+
+
+            public override string ToString()
+            {
+                return BuildString(index, size);
+            }
+
+            internal static string BuildString(int index, int size)
+            {
+                return $"Dynamic{{{index},{size}}}";
+            }
         }
     }
 }

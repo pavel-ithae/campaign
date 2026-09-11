@@ -1,10 +1,17 @@
-namespace Campaign.API;
-
+using System;
 using System.Runtime.InteropServices;
 
 
-internal static partial class StringAPI
+namespace Campaign.API
 {
-    [LibraryImport(APIUtility.LIBRARY_NAME, StringMarshalling = StringMarshalling.Utf8, EntryPoint = "campaign_string_free")]
-    internal static partial APIResult Free(IntPtr stringPtr);
+    internal static partial class StringAPI
+    {
+#if !NET48
+        [LibraryImport(APIUtility.LIBRARY_NAME, StringMarshalling = StringMarshalling.Utf8, EntryPoint = "campaign_string_free")]
+        internal static partial APIResult Free(IntPtr stringPtr);
+#else
+        [DllImport(APIUtility.LIBRARY_NAME, EntryPoint = "campaign_string_free")]
+        internal static extern APIResult Free(IntPtr stringPtr);
+#endif
+    }
 }
